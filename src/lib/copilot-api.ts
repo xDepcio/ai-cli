@@ -69,8 +69,6 @@ class CopilotApi {
                 break
             }
         }
-
-        console.log('Authentication successful. Copilot is now ready to use.')
     }
 
     private async generateNewToken() {

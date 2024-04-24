@@ -1,30 +1,13 @@
 import { Args, Command, Flags } from '@oclif/core'
+import { CopilotApi } from '../lib/copilot-api.js'
+import { STORE } from '../index.js'
 
 export default class Signin extends Command {
-    // static override args = {
-    //   file: Args.string({description: 'file to read'}),
-    // }
-
-    // static override description = 'describe the command here'
-
-    // static override examples = [
-    //   '<%= config.bin %> <%= command.id %>',
-    // ]
-
-    // static override flags = {
-    //   // flag with no value (-f, --force)
-    //   force: Flags.boolean({char: 'f'}),
-    //   // flag with a value (-n, --name=VALUE)
-    //   name: Flags.string({char: 'n', description: 'name to print'}),
-    // }
+    static override description = 'Sign in to Github.'
 
     public async run(): Promise<void> {
-        const { args, flags } = await this.parse(Signin)
-        // const name = flags.name ?? 'world'
-        // this.log(`hello ${name} from /home/olek/my-projects-2/ai-cli/src/commands/signin.ts`)
-        // if (args.file && flags.force) {
-        //     this.log(`you input --force and --file: ${args.file}`)
-        // }
-
+        const copilotApi = new CopilotApi({ store: STORE })
+        await copilotApi.setupDevice()
+        this.log("Successfully authenticated.")
     }
 }
