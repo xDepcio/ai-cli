@@ -12,7 +12,13 @@ class ErrorFileNotExist extends Error {
     }
 }
 
-class Store {
+interface IStore {
+    getDirPath(): string
+    readJsonFile<TFile extends JsonablePojo>(filePathInStoreDir: string): TFile
+    writeJsonFile<TFile extends JsonablePojo>(filePathInStoreDir: string, data: Partial<TFile>): void
+}
+
+class Store implements IStore {
     private readonly dirPath: string
 
     constructor({ dirPath = STORE_DIR_PATH }:
@@ -40,17 +46,26 @@ class Store {
         return file
     }
 
-    public writeJsonFile<TFile extends JsonablePojo>(filePathInStoreDir: string, data: TFile) {
+    /**
+        * Write a JSON file to the store directory.
+        * If the file already exists, the new data will be merged with the existing data.
+     */
+    public writeJsonFile<TFile extends JsonablePojo>(filePathInStoreDir: string, data: Partial<TFile>) {
         const filePath = `${this.dirPath}/${filePathInStoreDir}`
         const destDir = path.dirname(filePath)
         if (!fs.existsSync(destDir)) {
             fs.mkdirSync(destDir, { recursive: true })
         }
-        fs.writeFileSync(filePath, JSON.stringify(data, null, 4), {})
+        let currFileData = {}
+        if (fs.existsSync(filePath)) {
+            currFileData = this.readJsonFile(filePathInStoreDir)
+        }
+        fs.writeFileSync(filePath, JSON.stringify({ ...currFileData, data }, null, 4), {})
     }
 }
 
 export {
+    IStore,
     Store,
     ErrorFileNotExist
 }
