@@ -17,6 +17,7 @@
     "ai-cli": "./bin/run.js"
   },
   "files": [
+    "/theme.json",
     "/bin",
     "/dist",
     "/oclif.manifest.json"
@@ -44,7 +45,8 @@
       "hello": {
         "description": "Say hello to the world and others"
       }
-    }
+    },
+    "theme": "theme.json"
   },
   "dependencies": {
     "@oclif/core": "^3",
