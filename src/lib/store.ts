@@ -25,7 +25,6 @@ class Store implements IStore {
         { dirPath?: string }
         = { dirPath: STORE_DIR_PATH }
     ) {
-        console.log("In Store constrcutopr")
         this.dirPath = dirPath
         if (!fs.existsSync(this.dirPath)) {
             fs.mkdirSync(this.dirPath, { recursive: true })
