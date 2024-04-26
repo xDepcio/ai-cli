@@ -59,7 +59,7 @@ class Store implements IStore {
         if (fs.existsSync(filePath)) {
             currFileData = this.readJsonFile(filePathInStoreDir)
         }
-        fs.writeFileSync(filePath, JSON.stringify({ ...currFileData, data }, null, 4), {})
+        fs.writeFileSync(filePath, JSON.stringify({ ...currFileData, ...data }, null, 4), {})
     }
 }
 
