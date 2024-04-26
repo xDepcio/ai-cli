@@ -40,23 +40,29 @@ export default class Complete extends Command {
             description: 'Specify completion language.',
             required: true,
         }),
+        prePrompt: Flags.string({
+            char: 'p',
+            description: 'Text to prepend to prompt.',
+        })
     }
 
     public async run(): Promise<void> {
         const { args, flags } = await this.parse(Complete)
 
+        // process.stdout.write(flags.prePrompt ?? '')
+
         let completions: CompletionReturnData[] = []
         switch (true) {
             case flags.stdin:
                 const stdinStr = await this.getPromptFromStdin()
-                completions = await this.copilotApi.getCommandCompletion(stdinStr, flags.language)
+                completions = await this.copilotApi.getCommandCompletion(stdinStr, flags.language, flags.prePrompt)
                 break
             case !!flags.text:
-                completions = await this.copilotApi.getCommandCompletion(flags.text, flags.language)
+                completions = await this.copilotApi.getCommandCompletion(flags.text, flags.language, flags.prePrompt)
                 break
             case !!flags.file:
                 const fileContent = fs.readFileSync(flags.file, 'utf8')
-                completions = await this.copilotApi.getCommandCompletion(fileContent, flags.language)
+                completions = await this.copilotApi.getCommandCompletion(fileContent, flags.language, flags.prePrompt)
             default:
                 break
         }
