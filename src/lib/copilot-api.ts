@@ -103,7 +103,7 @@ class CopilotApi {
         if (prePrompt) {
             prompt = prePrompt + prompt
         }
-        console.log({ prompt })
+        // console.log({ prompt })
         const copilotResponse = await fetch('https://copilot-proxy.githubusercontent.com/v1/engines/copilot-codex/completions', {
             method: "POST",
             headers: {
