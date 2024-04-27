@@ -16,6 +16,8 @@ interface IStore {
     getDirPath(): string
     readJsonFile<TFile extends JsonablePojo>(filePathInStoreDir: string): TFile
     writeJsonFile<TFile extends JsonablePojo>(filePathInStoreDir: string, data: Partial<TFile>): void
+    writeTextFile(filePathInStoreDir: string, data: string): void
+    readTextFile(filePathInStoreDir: string): string
 }
 
 class Store implements IStore {
@@ -60,6 +62,23 @@ class Store implements IStore {
             currFileData = this.readJsonFile(filePathInStoreDir)
         }
         fs.writeFileSync(filePath, JSON.stringify({ ...currFileData, ...data }, null, 4), {})
+    }
+
+    public readTextFile(filePathInStoreDir: string): string {
+        const filePath = `${this.dirPath}/${filePathInStoreDir}`
+        if (!fs.existsSync(filePath)) {
+            throw new ErrorFileNotExist(filePath)
+        }
+        return fs.readFileSync(filePath, "utf8")
+    }
+
+    public writeTextFile(filePathInStoreDir: string, data: string) {
+        const filePath = `${this.dirPath}/${filePathInStoreDir}`
+        const destDir = path.dirname(filePath)
+        if (!fs.existsSync(destDir)) {
+            fs.mkdirSync(destDir, { recursive: true })
+        }
+        fs.writeFileSync(filePath, data, {})
     }
 }
 
