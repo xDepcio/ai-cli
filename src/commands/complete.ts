@@ -48,19 +48,21 @@ export default class Complete extends Command {
 
     public async run(): Promise<void> {
         const { args, flags } = await this.parse(Complete)
+        const completeBackend = new CompleteBackend()
 
         let completions: CompletionReturnData[] = []
         switch (true) {
             case flags.stdin:
                 const stdinStr = await this.getPromptFromStdin()
-                completions = await this.copilotApi.getCommandCompletion(stdinStr, flags.language, flags.prePrompt)
+                completions = await completeBackend.getCompletions(stdinStr, flags.language, flags.prePrompt)
                 break
             case !!flags.text:
-                completions = await this.copilotApi.getCommandCompletion(flags.text, flags.language, flags.prePrompt)
+                completions = await completeBackend.getCompletions(flags.text, flags.language, flags.prePrompt)
                 break
             case !!flags.file:
                 const fileContent = fs.readFileSync(flags.file, 'utf8')
-                completions = await this.copilotApi.getCommandCompletion(fileContent, flags.language, flags.prePrompt)
+                completions = await completeBackend.getCompletions(fileContent, flags.language, flags.prePrompt)
+                break
             default:
                 break
         }
@@ -81,5 +83,17 @@ export default class Complete extends Command {
                 reject(err)
             })
         })
+    }
+}
+
+export class CompleteBackend {
+    private copilotApi: CopilotApi
+    constructor() {
+        this.copilotApi = new CopilotApi({ store: STORE })
+    }
+
+    public async getCompletions(prompt: string, language: string, prePrompt?: string): Promise<CompletionReturnData[]> {
+        const completions = await this.copilotApi.getCommandCompletion(prompt, language, prePrompt)
+        return completions
     }
 }
