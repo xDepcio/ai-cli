@@ -54,14 +54,14 @@ export default class Complete extends Command {
         switch (true) {
             case flags.stdin:
                 const stdinStr = await this.getPromptFromStdin()
-                completions = (await completeBackend.getCompletions({ prompt: stdinStr, language: flags.language, prePrompt: flags.prePrompt })).completions
+                completions = await completeBackend.getCompletions({ prompt: stdinStr, language: flags.language, prePrompt: flags.prePrompt })
                 break
             case !!flags.text:
-                completions = (await completeBackend.getCompletions({ prompt: flags.text, language: flags.language, prePrompt: flags.prePrompt })).completions
+                completions = await completeBackend.getCompletions({ prompt: flags.text, language: flags.language, prePrompt: flags.prePrompt })
                 break
             case !!flags.file:
                 const fileContent = fs.readFileSync(flags.file, 'utf8')
-                completions = (await completeBackend.getCompletions({ prompt: fileContent, language: flags.language, prePrompt: flags.prePrompt })).completions
+                completions = await completeBackend.getCompletions({ prompt: fileContent, language: flags.language, prePrompt: flags.prePrompt })
                 break
             default:
                 break
@@ -86,14 +86,17 @@ export default class Complete extends Command {
     }
 }
 
-export class CompleteBackend {
+export interface ICompleteBackend {
+    getCompletions({ language, prompt, prePrompt }: { prompt: string, language: string, prePrompt?: string }): Promise<CompletionReturnData[]>
+}
+export class CompleteBackend implements ICompleteBackend {
     private copilotApi: CopilotApi
     constructor() {
         this.copilotApi = new CopilotApi({ store: STORE })
     }
 
-    public async getCompletions({ id = '', language, prompt, prePrompt = '' }: { id?: string, prompt: string, language: string, prePrompt?: string }): Promise<{ completions: CompletionReturnData[], id: string }> {
+    public async getCompletions({ language, prompt, prePrompt = '' }: { prompt: string, language: string, prePrompt?: string }): Promise<CompletionReturnData[]> {
         const completions = await this.copilotApi.getCommandCompletion({ prompt, language, prePrompt })
-        return { completions, id }
+        return completions
     }
 }

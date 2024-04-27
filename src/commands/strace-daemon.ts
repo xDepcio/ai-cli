@@ -1,6 +1,6 @@
 import { Args, Command, Flags, ux } from '@oclif/core'
 import fs from 'fs'
-import { CompleteBackend } from './complete.js'
+import { CompleteBackend, ICompleteBackend } from './complete.js'
 import { CompletionReturnData } from '../lib/copilot-api.js'
 import { STORE } from '../index.js'
 import chalk from 'chalk'
@@ -30,7 +30,7 @@ export default class StraceDaemon extends Command {
 
     public async run(): Promise<void> {
         const { args, flags } = await this.parse(StraceDaemon)
-        let i = 0
+        let cancel: (...args: any) => any = () => { }
         return new Promise((resolve, reject) => {
             const strace = exec(`strace -qqq -f -p ${flags.pid} -s 1000 -e trace=write 2>&1 | rg --line-buffered -o 'write\\(2, "[!-~ ]", 1\\)' | tee strace.log`)
             strace.on('exit', () => {
@@ -45,31 +45,35 @@ export default class StraceDaemon extends Command {
                 if (!readlineLine || !readlineCursor) {
                     return
                 }
-
+                cancel()
+                let p = new Promise(resolve => cancel = resolve)
                 let parsedReadlineCursor = parseInt(readlineCursor)
                 process.stdout.write(curNRight((readlineLine.length - 1) - parsedReadlineCursor) + eraseFromCursorToEndLine)
-                // process.stdout.write(curNRight((readlineLine.length - 1) - parsedReadlineCursor))
                 process.stdout.write(chalk.dim('...') + curNLeft(3))
                 process.stdout.write(curNLeft((readlineLine.length - 1) - parsedReadlineCursor))
-
-                const promiseId = uuidv4()
-                const completionsPromise = completeBackend.getCompletions({ language, prompt, prePrompt, id: promiseId })
-                Promise.ra
-                completionsPromise.then(({ completions, id }) => {
-                    if (id !== promiseId) {
-                        return
+                Promise.race([p, getCompletion({ language, prompt, prePrompt })]).then((result) => {
+                    if (result) {
+                        const completions = result as CompletionReturnData[]
+                        const completionsStr = completions.map(c => c.choices[0].text).join('')
+                        STORE.writeTextFile('completions.txt', completionsStr)
+                        if (completionsStr.length > 0) {
+                            process.stdout.write(curNRight((readlineLine.length - 1) - parsedReadlineCursor))
+                            process.stdout.write(chalk.dim(completionsStr) + curNLeft(completionsStr.length))
+                            process.stdout.write(curNLeft((readlineLine.length - 1) - parsedReadlineCursor))
+                        }
                     }
-                    const completionsStr = completions.map(c => c.choices[0].text).join('')
-                    STORE.writeTextFile('completions.txt', completionsStr)
-                    process.stdout.write(curNRight((readlineLine.length - 1) - parsedReadlineCursor))
-                    process.stdout.write(chalk.dim(completionsStr) + curNLeft(completionsStr.length))
-                    process.stdout.write(curNLeft((readlineLine.length - 1) - parsedReadlineCursor))
                 })
             })
         })
     }
 }
-
+function getCompletion({ language, prompt, prePrompt }: Parameters<ICompleteBackend['getCompletions']>[0]): Promise<CompletionReturnData[]> {
+    const completionsBackend = new CompleteBackend()
+    return completionsBackend.getCompletions({ language, prompt, prePrompt })
+    // return new Promise((resolve) => {
+    //     setTimeout(() => resolve('eloelo320'), 500)
+    // })
+}
 function syncedPromise<T>(promise: Promise<T>) {
     let resolved = false
     let resolvedValue: T
