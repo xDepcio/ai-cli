@@ -49,8 +49,6 @@ export default class Complete extends Command {
     public async run(): Promise<void> {
         const { args, flags } = await this.parse(Complete)
 
-        // process.stdout.write(flags.prePrompt ?? '')
-
         let completions: CompletionReturnData[] = []
         switch (true) {
             case flags.stdin:
@@ -71,21 +69,14 @@ export default class Complete extends Command {
 
     private async getPromptFromStdin(): Promise<string> {
         return new Promise((resolve, reject) => {
-            // let data = ''
             process.stdin.on('readable', () => {
                 const chunk = process.stdin.read();
                 console.log('chunk:', chunk)
                 console.log('chunkstr:', chunk.toString())
                 if (chunk !== null) {
-                    // console.log('chunk:', chunk.toString())
-                    // data = data + chunk.toString()
                     resolve(chunk.toString())
                 }
             })
-            // process.stdin.on('end', () => {
-            //     console.log('end:', 'end')
-            //     resolve(data)
-            // })
             process.stdin.on('error', (err) => {
                 reject(err)
             })
