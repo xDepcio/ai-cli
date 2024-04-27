@@ -93,7 +93,7 @@ class CopilotApi {
         })
     }
 
-    public async getCommandCompletion(prompt: string, language: string = 'bash', prePrompt?: string): Promise<CompletionReturnData[]> {
+    public async getCommandCompletion({ language = 'bash', prompt, prePrompt = '' }: { prompt: string, language?: string, prePrompt?: string }): Promise<CompletionReturnData[]> {
         await this.generateNewToken()
         const token = this.store.readJsonFile<CopilotApiConfig>(this.configFile).githubToken
         //         prompt = `names = ['Alice', 'Bob', 'Charlie']

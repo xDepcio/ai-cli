@@ -84,7 +84,7 @@ export default class Daemon extends Command {
                         process.stdout.write(curNLeft((daemonMessage.readlineLine.length - 1) - daemonMessage.readlineCusror))
 
                         const completeBackend = new CompleteBackend()
-                        const completions = await completeBackend.getCompletions(daemonMessage.prompt, daemonMessage.language, daemonMessage.prePrompt)
+                        const completions = (await completeBackend.getCompletions({ language: daemonMessage.language, prompt: daemonMessage.prompt, prePrompt: daemonMessage.prePrompt })).completions
                         const completionsStr = completions.map(c => c.choices[0].text).join('')
                         STORE.writeTextFile('completions.txt', completionsStr)
 
