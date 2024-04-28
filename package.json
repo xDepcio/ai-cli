@@ -51,7 +51,9 @@
   "dependencies": {
     "@oclif/core": "^3",
     "@oclif/plugin-help": "^6",
-    "@oclif/plugin-plugins": "^5"
+    "@oclif/plugin-plugins": "^5",
+    "chalk": "^5.3.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@oclif/prettier-config": "^0.2.1",
@@ -59,6 +61,7 @@
     "@types/chai": "^4",
     "@types/mocha": "^10",
     "@types/node": "^18",
+    "@types/uuid": "^9.0.8",
     "chai": "^4",
     "eslint": "^8",
     "eslint-config-oclif": "^5",
