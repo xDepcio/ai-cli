@@ -2,7 +2,7 @@
 
 # kill $(ps -ef | rg "inotifywait -q -q" | sd "olek[ ]+([0-9]+)[ ]+([0-9]+).*" '$2')
 # Define the file to monitor
-file_to_monitor="./strace.log"
+file_to_monitor="/home/olek/my-projects-2/ai-cli/strace.log"
 
 if [ -z "$1" ]; then
     echo "Usage: $0 <pid>"
