@@ -15,9 +15,11 @@ while true; do
     # Use inotifywait to monitor for changes to the file
     inotifywait -q -q -e modify "$file_to_monitor"
 
-    echo -n "bash<=%SEP%=>$ ls -al
-`ls -al`
-<=%SEP%=>" >| ~/.ai-cli/readline_access.txt
+    perl -e 'ioctl STDOUT, 0x5412, $_ for split //, do{ chomp($_ = " "); $_ }' ;
 
-    perl -e 'ioctl STDOUT, 0x5412, $_ for split //, do{ chomp($_ = " "); $_ }'
+    pwd=$(tail /home/olek/.ai-cli/readline_access.txt --lines 1 | sd '.*<=%SEP%=>' '')
+
+    echo -n "<=%SEP%=>bash<=%SEP%=>$ ls -al
+`ls -al $pwd`
+" >> ~/.ai-cli/readline_access.txt
 done
