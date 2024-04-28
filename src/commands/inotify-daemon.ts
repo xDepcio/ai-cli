@@ -11,16 +11,16 @@ const completeBackend = new CompleteBackend()
 export default class InotifyDaemon extends Command {
 
     private async handleReadlineAccess() {
-        const [language, prePrompt, readlineLine, readlineCursor] = fs.readFileSync('/home/olek/.ai-cli/readline_access.txt', 'utf8').split('<=%SEP%=>')
-        if (!readlineLine || !readlineCursor) {
+        const [readlineLine, readlineCursor, pwd, language, prePrompt] = fs.readFileSync('/home/olek/.ai-cli/readline_access.txt', 'utf8').split('<=%SEP%=>')
+        if (!readlineLine || !readlineCursor || !language || !prePrompt || !pwd) {
             return
         }
         cancel()
         let p = new Promise(resolve => cancel = resolve)
         let parsedReadlineCursor = parseInt(readlineCursor)
-        process.stdout.write(curNRight((readlineLine.length - 1) - parsedReadlineCursor) + eraseFromCursorToEndLine)
-        process.stdout.write(chalk.dim('     ⟳') + curNLeft(6))
-        process.stdout.write(curNLeft((readlineLine.length - 1) - parsedReadlineCursor))
+        // process.stdout.write(curNRight((readlineLine.length - 1) - parsedReadlineCursor) + eraseFromCursorToEndLine)
+        // process.stdout.write(chalk.dim('     ⟳') + curNLeft(6))
+        // process.stdout.write(curNLeft((readlineLine.length - 1) - parsedReadlineCursor))
         const prompt = '\n$ ' + readlineLine
         Promise.race([p, completeBackend.getCompletions({ language, prompt, prePrompt })]).then((result) => {
             if (result) {
