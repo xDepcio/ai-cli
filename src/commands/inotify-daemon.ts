@@ -1,4 +1,4 @@
-import { Command, Flags } from '@oclif/core'
+import { Command } from '@oclif/core'
 import chalk from 'chalk'
 import fs from 'fs'
 import { STORE } from '../index.js'
