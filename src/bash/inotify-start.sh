@@ -11,9 +11,15 @@ fi
 
 # strace -qqq -f -p $1 -s 1000 -e trace=write 2>&1 | rg --line-buffered -o 'write\(2, "[!-~ ]", 1\)' >| ./strace.log &
 # Run indefinitely, monitoring for changes to the file
+strace_size=0
+new_strace_size=0
 while true; do
     # Use inotifywait to monitor for changes to the file
-    inotifywait -q -q -e modify "$file_to_monitor"
+    new_strace_size=$(ls -l $file_to_monitor | awk '{print $5}')
+    if [ "$strace_size" = "$new_strace_size" ]; then
+        inotifywait -q -q -e modify "$file_to_monitor"
+    fi
+    strace_size=$(ls -l $file_to_monitor | awk '{print $5}')
 
     perl -e 'ioctl STDOUT, 0x5412, $_ for split //, do{ chomp($_ = " "); $_ }' ;
 
