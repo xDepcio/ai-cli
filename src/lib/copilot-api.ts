@@ -96,14 +96,11 @@ class CopilotApi {
     public async getCommandCompletion({ language = 'bash', prompt, prePrompt = '' }: { prompt: string, language?: string, prePrompt?: string }): Promise<CompletionReturnData[]> {
         await this.generateNewToken()
         const token = this.store.readJsonFile<CopilotApiConfig>(this.configFile).githubToken
-        //         prompt = `names = ['Alice', 'Bob', 'Charlie']
 
-        // def get`
-        // console.log(prompt, "prompt")
         if (prePrompt) {
             prompt = prePrompt + prompt
         }
-        // console.log({ prompt })
+
         const copilotResponse = await fetch('https://copilot-proxy.githubusercontent.com/v1/engines/copilot-codex/completions', {
             method: "POST",
             headers: {
@@ -126,7 +123,6 @@ class CopilotApi {
             })
         })
         const copilotText = await copilotResponse.text()
-        // console.log(copilotText)
         const allMatchedData = this.reduceIter(copilotText.matchAll(/\{.*\}/g))
             .map(match => JSON.parse(match))
         return allMatchedData
