@@ -98,4 +98,24 @@ describe('makeSyncedPromise', () => {
             }
             expect(thrown).to.be.true
         })
+
+    test
+        .it('Should not create own context for this keyword', async () => {
+            class ContextTest {
+                private value = 'IShallChange'
+
+                contextTest() {
+                    const sync = makeSyncedPromise()
+                    const syncedPromise = sync(new Promise((resolve) => {
+                        this.value = 'IChanged'
+                        setTimeout(() => resolve(this.value), 10)
+                    }))
+                    return syncedPromise
+                }
+            }
+            const c = new ContextTest()
+            const contextCromise = c.contextTest()
+            const promiseVal = await contextCromise
+            expect(promiseVal === 'IChanged')
+        })
 })
