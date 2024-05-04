@@ -1,5 +1,5 @@
 import { expect, test } from '@oclif/test'
-import { makeSyncedPromise } from '../../src/lib/promise-lifo.js'
+import { NewPromiseRegisteredError, makeSyncedPromise } from '../../src/lib/promise-lifo.js'
 
 describe('makeSyncedPromise', () => {
     it("Should cancel previous funcs by rejecting them", () => {
@@ -16,7 +16,7 @@ describe('makeSyncedPromise', () => {
         val: number,
         timeout: number
     }
-    let promisesResolveTimes = (key: string, valuesTimeouts: ValueTimeout[]) => {
+    let promisesResolveTimes = <T extends string>(key: T, valuesTimeouts: ValueTimeout[]) => {
         return test
             .add(key, () => {
                 const sync = makeSyncedPromise()
@@ -77,5 +77,25 @@ describe('makeSyncedPromise', () => {
 
             const value2 = await res2Promise
             expect(value2).equal(2)
+        })
+
+    promisesResolveTimes('promiseSync', [
+        { key: 'res1', timeout: 10, val: 1 },
+        { key: 'res2', timeout: 50, val: 2 },
+    ])
+        .it("Should reject previous promises with NewPromiseRegisteredError", async (ctx) => {
+            // @ts-ignore
+            const res1Promise = ctx.promiseSync.res1 as Promise<number>
+            // @ts-ignore
+            const res2Promise = ctx.promiseSync.res2 as Promise<number>
+
+            let thrown = false
+            try {
+                await res1Promise
+            } catch (e) {
+                thrown = true
+                expect(e instanceof NewPromiseRegisteredError)
+            }
+            expect(thrown).to.be.true
         })
 })
