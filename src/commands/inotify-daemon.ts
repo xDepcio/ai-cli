@@ -7,9 +7,9 @@ import { CompletionReturnData } from '../lib/copilot-api.js'
 import { CompleteBackend } from './complete.js'
 import { NewPromiseRegisteredError, makeSyncedPromise } from '../lib/promise-lifo.js'
 
-const completeBackend = new CompleteBackend()
 export default class InotifyDaemon extends Command {
     private syncedPromise = makeSyncedPromise()
+    private completeBackend = new CompleteBackend()
 
     private async handleReadlineAccess() {
         const [readlineLine, readlineCursor, pwd, language, prePrompt] = fs.readFileSync('/home/olek/.ai-cli/readline_access.txt', 'utf8').split('<=%SEP%=>')
@@ -21,21 +21,24 @@ export default class InotifyDaemon extends Command {
         // process.stdout.write(chalk.dim('     ⟳') + curNLeft(6))
         // process.stdout.write(curNLeft((readlineLine.length - 1) - parsedReadlineCursor))
         const prompt = '\n$ ' + readlineLine
-        this.syncedPromise(completeBackend.getCompletions({ language, prompt, prePrompt }))
+        this.syncedPromise(this.completeBackend.getCompletions({ language, prompt, prePrompt }))
             .then((result) => {
-                if (result) {
-                    const completions = result as CompletionReturnData[]
-                    const completionsStr = completions.map(c => c.choices[0].text).join('')
-                    STORE.writeTextFile('completions.txt', completionsStr)
-                    process.stdout.write(curNRight((readlineLine.length - 1) - parsedReadlineCursor) + eraseFromCursorToEndLine)
-                    process.stdout.write(curNLeft((readlineLine.length - 1) - parsedReadlineCursor))
-                    if (completionsStr.length > 0) {
-
-                        process.stdout.write(curNRight((readlineLine.length - 1) - parsedReadlineCursor))
-                        process.stdout.write(chalk.dim(completionsStr) + curNLeft(completionsStr.length))
-                        process.stdout.write(curNLeft((readlineLine.length - 1) - parsedReadlineCursor))
-                    }
+                if (!result) {
+                    return
                 }
+
+                const completions = result as CompletionReturnData[]
+                const completionsStr = completions.map(c => c.choices[0].text).join('')
+                STORE.writeTextFile('completions.txt', completionsStr)
+                process.stdout.write(curNRight((readlineLine.length - 1) - parsedReadlineCursor) + eraseFromCursorToEndLine)
+                process.stdout.write(curNLeft((readlineLine.length - 1) - parsedReadlineCursor))
+                if (completionsStr.length <= 0) {
+                    return
+                }
+
+                process.stdout.write(curNRight((readlineLine.length - 1) - parsedReadlineCursor))
+                process.stdout.write(chalk.dim(completionsStr) + curNLeft(completionsStr.length))
+                process.stdout.write(curNLeft((readlineLine.length - 1) - parsedReadlineCursor))
             })
             .catch((e) => {
                 if (e instanceof NewPromiseRegisteredError) {
@@ -55,7 +58,6 @@ export default class InotifyDaemon extends Command {
 
     public async run(): Promise<void> {
         const { args, flags } = await this.parse(InotifyDaemon)
-        this.syncedPromise = makeSyncedPromise()
 
         return new Promise((resolve, reject) => {
             const watcher = fs.watch('/home/olek/.ai-cli/readline_access.txt', () => this.handleReadlineAccess())
