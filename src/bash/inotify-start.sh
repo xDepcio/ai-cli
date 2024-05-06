@@ -11,17 +11,18 @@ fi
 strace_size=0
 new_strace_size=0
 while true; do
-    status=$(cat $status_file)
-    if [ "$status" = "off" ]; then
-        inotifywait -q -q -e modify "$status_file"
-        continue
-    fi
 
     new_strace_size=$(ls -l $strace_log_file | awk '{print $5}')
     if [ "$strace_size" = "$new_strace_size" ]; then
         inotifywait -q -q -e modify "$strace_log_file"
     fi
     strace_size=$(ls -l $strace_log_file | awk '{print $5}')
+
+    status=$(cat $status_file)
+    if [ "$status" = "off" ]; then
+        inotifywait -q -q -e modify "$status_file"
+        continue
+    fi
 
     perl -e 'ioctl STDOUT, 0x5412, $_ for split //, do{ chomp($_ = " "); $_ }' ;
 
