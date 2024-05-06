@@ -1,6 +1,7 @@
 #!/bin/bash
 
 file_to_monitor="/home/olek/my-projects-2/ai-cli/strace.log"
+status_file="/home/olek/.ai-cli/status.txt"
 
 if [ -z "$1" ]; then
     echo "Usage: $0 <pid>"
@@ -10,6 +11,12 @@ fi
 strace_size=0
 new_strace_size=0
 while true; do
+    status=$(cat $status_file)
+    if [ "$status" = "off" ]; then
+        inotifywait -q -q -e modify "$status_file"
+        continue
+    fi
+
     new_strace_size=$(ls -l $file_to_monitor | awk '{print $5}')
     if [ "$strace_size" = "$new_strace_size" ]; then
         inotifywait -q -q -e modify "$file_to_monitor"
