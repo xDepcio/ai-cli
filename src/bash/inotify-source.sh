@@ -17,3 +17,21 @@ _fill_complete()
 }
 
 bind -x '"\C- ": _fill_complete'
+
+_fill_word()
+{
+    next_word=$(rg '^ *[!-~]+' ~/.ai-cli/completions.txt -o)
+    next_word_length=$(echo -n "$next_word" | wc -c)
+    sd '^ *[!-~]+' '' ~/.ai-cli/completions.txt
+    rest=$(cat ~/.ai-cli/completions.txt)
+    rest_length=$(echo -n "$rest" | wc -c)
+
+    READLINE_LINE="$READLINE_LINE$next_word"
+    READLINE_POINT=$(($READLINE_POINT + $next_word_length))
+    if [ $rest_length = 0 ]; then
+        return
+    fi
+
+    ( sleep 0 && echo -e -n "\033[2m$rest\033[0m\033[${rest_length}D" & )
+}
+bind -x '"\C-n": _fill_word'
