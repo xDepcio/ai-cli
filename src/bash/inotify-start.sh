@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file_to_monitor="/home/olek/my-projects-2/ai-cli/strace.log"
+strace_log_file="/home/olek/.ai-cli/strace.log"
 status_file="/home/olek/.ai-cli/status.txt"
 
 if [ -z "$1" ]; then
@@ -17,11 +17,11 @@ while true; do
         continue
     fi
 
-    new_strace_size=$(ls -l $file_to_monitor | awk '{print $5}')
+    new_strace_size=$(ls -l $strace_log_file | awk '{print $5}')
     if [ "$strace_size" = "$new_strace_size" ]; then
-        inotifywait -q -q -e modify "$file_to_monitor"
+        inotifywait -q -q -e modify "$strace_log_file"
     fi
-    strace_size=$(ls -l $file_to_monitor | awk '{print $5}')
+    strace_size=$(ls -l $strace_log_file | awk '{print $5}')
 
     perl -e 'ioctl STDOUT, 0x5412, $_ for split //, do{ chomp($_ = " "); $_ }' ;
 
