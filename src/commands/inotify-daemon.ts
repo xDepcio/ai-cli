@@ -68,10 +68,12 @@ export default class InotifyDaemon extends Command {
                 }
 
                 if (e instanceof TypeError) {
-                    if ((e.cause as any).code === 'UND_ERR_CONNECT_TIMEOUT') {
+                    if ((e?.cause as any)?.code === 'UND_ERR_CONNECT_TIMEOUT') {
                         process.stdout.write(chalk.bgRed('Copilot timeout out'))
+                        return
                     }
-                    return
+
+                    console.error("type error", e)
                 }
 
                 console.error("not handled error", e)
