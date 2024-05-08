@@ -40,6 +40,6 @@ while true; do
     done
 
     echo -n "${lines[0]}<=%SEP%=>${lines[1]}<=%SEP%=>${lines[2]}<=%SEP%=>bash<=%SEP%=>$ ls -al
-`ls -al $_PWD`
+`ls -al ${lines[2]}`
 " >| ~/.ai-cli/readline_access.txt
 done
