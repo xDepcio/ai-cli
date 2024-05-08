@@ -14,23 +14,32 @@ while true; do
 
     new_strace_size=$(ls -l $strace_log_file | awk '{print $5}')
     if [ "$strace_size" = "$new_strace_size" ]; then
-        # inotifywait -q -q -e modify "$strace_log_file"
-        /home/olek/my-projects-2/ai-cli/my_inotify $strace_log_file
+        inotifywait -q -q -e modify "$strace_log_file"
     fi
     strace_size=$(ls -l $strace_log_file | awk '{print $5}')
 
     status=$(cat $status_file)
     if [ "$status" = "off" ]; then
-        # inotifywait -q -q -e modify "$status_file"
-        /home/olek/my-projects-2/ai-cli/my_inotify $status_file
+        inotifywait -q -q -e modify "$status_file"
         continue
     fi
 
+    mapfile -t lines < /home/olek/.ai-cli/readline_contents.txt
+    last_control_num="${lines[3]}"
+
     perl -e 'ioctl STDOUT, 0x5412, $_ for split //, do{ chomp($_ = " "); $_ }' ;
 
-    pwd=$(tail /home/olek/.ai-cli/readline_access.txt --lines 1 | sd '.*<=%SEP%=>' '')
+    mapfile -t lines < /home/olek/.ai-cli/readline_contents.txt
+    while [ "${lines[3]}" = "$last_control_num" ]; do
+        saved_control="${lines[3]}"
+        mapfile -t lines < /home/olek/.ai-cli/readline_contents.txt
+        if [ -z "${lines[3]}" ]; then
+            lines[3]="$saved_control"
+            continue
+        fi
+    done
 
-    echo -n "<=%SEP%=>bash<=%SEP%=>$ ls -al
-`ls -al $pwd`
-" >> ~/.ai-cli/readline_access.txt
+    echo -n "${lines[0]}<=%SEP%=>${lines[1]}<=%SEP%=>${lines[2]}<=%SEP%=>bash<=%SEP%=>$ ls -al
+`ls -al $_PWD`
+" >| ~/.ai-cli/readline_access.txt
 done

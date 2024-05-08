@@ -1,7 +1,14 @@
 #!/bin/bash
+
+control_number=0
 _mt_test_f()
 {
-    echo -n "$READLINE_LINE<=%SEP%=>$READLINE_POINT<=%SEP%=>$PWD" >| ~/.ai-cli/readline_access.txt
+    # echo -n "$READLINE_LINE<=%SEP%=>$READLINE_POINT<=%SEP%=>$PWD" >| ~/.ai-cli/readline_access.txt
+    control_number=$(($control_number + 1))
+    echo -n "$READLINE_LINE
+$READLINE_POINT
+$PWD
+$control_number" >| ~/.ai-cli/readline_contents.txt
 }
 
 bind -x '" ": _mt_test_f'
