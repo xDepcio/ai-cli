@@ -11,8 +11,8 @@ export default class InotifyDaemon extends Command {
     private syncedPromise = makeSyncedPromise()
     private completeBackend = new CompleteBackend()
     private writer = new StdoutWriter({ loadingMessage: ' (...)' })
-    private oldStraceSize = 0
-    private straceFd = fs.openSync('./strace.log', 'r')
+    // private oldStraceSize = 0
+    // private straceFd = fs.openSync('/home/olek/.ai-cli/strace.log', 'r')
 
     // private readLatestWriteData() {
     //     const newStraceSize = fs.statSync('./strace.log').size
