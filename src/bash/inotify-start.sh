@@ -14,13 +14,15 @@ while true; do
 
     new_strace_size=$(ls -l $strace_log_file | awk '{print $5}')
     if [ "$strace_size" = "$new_strace_size" ]; then
-        inotifywait -q -q -e modify "$strace_log_file"
+        # inotifywait -q -q -e modify "$strace_log_file"
+        /home/olek/my-projects-2/ai-cli/my_inotify $strace_log_file
     fi
     strace_size=$(ls -l $strace_log_file | awk '{print $5}')
 
     status=$(cat $status_file)
     if [ "$status" = "off" ]; then
-        inotifywait -q -q -e modify "$status_file"
+        # inotifywait -q -q -e modify "$status_file"
+        /home/olek/my-projects-2/ai-cli/my_inotify $status_file
         continue
     fi
 
