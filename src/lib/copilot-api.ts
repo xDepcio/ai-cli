@@ -1,3 +1,4 @@
+import { FILE_LOGGER } from "../index.js"
 import { IStore } from "./store.js"
 
 type CopilotApiConfig = {
@@ -123,6 +124,7 @@ class CopilotApi {
             })
         })
         const copilotText = await copilotResponse.text()
+        FILE_LOGGER.debug('Copilot response', { copilotText })
         const allMatchedData = this.reduceIter(copilotText.matchAll(/\{.*\}/g))
             .map(match => JSON.parse(match))
         return allMatchedData
