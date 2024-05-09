@@ -16,3 +16,7 @@ export function makeSyncedPromise() {
         return Promise.race([p, promise])
     }
 }
+
+export function sleepPromise(time: number) {
+    return new Promise(resolve => setTimeout(resolve, time))
+}
