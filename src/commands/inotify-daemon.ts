@@ -3,7 +3,7 @@ import chalk from 'chalk'
 import fs from 'fs'
 import { STORE } from '../index.js'
 import { CompletionReturnData } from '../lib/copilot-api.js'
-import { NewPromiseRegisteredError, makeSyncedPromise } from '../lib/promise-lifo.js'
+import { NewPromiseRegisteredError, makeSyncedPromise, sleepPromise } from '../lib/promise-lifo.js'
 import { StdoutWriter } from '../lib/stdout-writer.js'
 import { CompleteBackend } from './complete.js'
 
@@ -20,47 +20,45 @@ export default class InotifyDaemon extends Command {
         let parsedReadlineCursor = parseInt(readlineCursor)
         this.writer.writeLoading(readlineLine, parsedReadlineCursor)
 
-        this.syncedPromise(new Promise((resolve) => {
-            setTimeout(() => {
-                resolve(void 0)
-            }, 200)
-        }))
-            .then(() => {
-                this.syncedPromise(this.completeBackend.getCompletions({ language, prompt: '\n$ ' + readlineLine, prePrompt }))
-                    .then((result) => {
-                        if (!result) {
-                            return
-                        }
-
-                        const completions = result as CompletionReturnData[]
-                        const completionsStr = completions.map(c => c.choices[0].text).join('')
-                        STORE.writeTextFile('completions.txt', completionsStr)
-
-                        this.writer.clearAppended(readlineLine, parsedReadlineCursor)
-                        if (completionsStr.length <= 0) {
-                            return
-                        }
-
-                        this.writer.writeCompletion(readlineLine, parsedReadlineCursor, completionsStr)
-                    })
-                    .catch((e) => {
-                        if (e instanceof NewPromiseRegisteredError) {
-                            return
-                        }
-
-                        if (e instanceof TypeError) {
-                            if ((e?.cause as any)?.code === 'UND_ERR_CONNECT_TIMEOUT') {
-                                process.stdout.write(chalk.bgRed('Copilot timeout out'))
-                                return
-                            }
-
-                            console.error("type error", e)
-                        }
-
-                        console.error("not handled error", e)
-                    })
-            })
+        this.syncedPromise(sleepPromise(200))
+            .then(() => this.handleCompletionRequest(language, prePrompt, readlineLine, parsedReadlineCursor))
             .catch((e) => { })
+    }
+
+    private handleCompletionRequest(language: string, prePrompt: string, readlineLine: string, parsedReadlineCursor: number) {
+        this.syncedPromise(this.completeBackend.getCompletions({ language, prompt: '\n$ ' + readlineLine, prePrompt }))
+            .then((result) => {
+                if (!result) {
+                    return
+                }
+
+                const completions = result as CompletionReturnData[]
+                const completionsStr = completions.map(c => c.choices[0].text).join('')
+                STORE.writeTextFile('completions.txt', completionsStr)
+
+                this.writer.clearAppended(readlineLine, parsedReadlineCursor)
+                if (completionsStr.length <= 0) {
+                    return
+                }
+
+                this.writer.writeCompletion(readlineLine, parsedReadlineCursor, completionsStr)
+            })
+            .catch((e) => {
+                if (e instanceof NewPromiseRegisteredError) {
+                    return
+                }
+
+                if (e instanceof TypeError) {
+                    if ((e?.cause as any)?.code === 'UND_ERR_CONNECT_TIMEOUT') {
+                        process.stdout.write(chalk.bgRed('Copilot timeout out'))
+                        return
+                    }
+
+                    console.error("type error", e)
+                }
+
+                console.error("not handled error", e)
+            })
     }
 
     public async run(): Promise<void> {
