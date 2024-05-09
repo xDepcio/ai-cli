@@ -6,6 +6,7 @@ import { CompletionReturnData } from '../lib/copilot-api.js'
 import { NewPromiseRegisteredError, makeSyncedPromise, sleepPromise } from '../lib/promise-lifo.js'
 import { StdoutWriter } from '../lib/stdout-writer.js'
 import { CompleteBackend } from './complete.js'
+import { KEYPRESS_TO_COMPLETION_FETCH_TIMEOUT } from '../constants.js'
 
 export default class InotifyDaemon extends Command {
     private syncedPromise = makeSyncedPromise()
@@ -20,7 +21,7 @@ export default class InotifyDaemon extends Command {
         let parsedReadlineCursor = parseInt(readlineCursor)
         this.writer.writeLoading(readlineLine, parsedReadlineCursor)
 
-        this.syncedPromise(sleepPromise(200))
+        this.syncedPromise(sleepPromise(KEYPRESS_TO_COMPLETION_FETCH_TIMEOUT))
             .then(() => this.handleCompletionRequest(language, prePrompt, readlineLine, parsedReadlineCursor))
             .catch((e) => { })
     }
