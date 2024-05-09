@@ -5,17 +5,22 @@ type POJOStringifiableToJson = {
     [key: string]: string | number | boolean | null | POJOStringifiableToJson;
 }
 
-type LoggerOptions = {
+type LoggerOptions = ({
     logDest: 'console';
 } | {
     logDest: 'file';
     logFile: string;
+}) & {
+    supressInternalLogs?: boolean;
 }
 class Logger {
     private options: LoggerOptions;
 
     public constructor(options: LoggerOptions) {
         this.options = options;
+        if (this.options.supressInternalLogs === undefined) {
+            this.options.supressInternalLogs = false;
+        }
         this.internal('Logger initialized');
     }
 
@@ -37,6 +42,9 @@ class Logger {
     }
 
     private internal(message: string, data?: POJOStringifiableToJson) {
+        if (this.options.supressInternalLogs) {
+            return;
+        }
         this.message(message, 'INTERNAL', data);
     }
 
