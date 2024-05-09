@@ -17,42 +17,50 @@ export default class InotifyDaemon extends Command {
         if (!readlineLine || !readlineCursor || !language || !prePrompt || !pwd) {
             return
         }
-
         let parsedReadlineCursor = parseInt(readlineCursor)
         this.writer.writeLoading(readlineLine, parsedReadlineCursor)
-        this.syncedPromise(this.completeBackend.getCompletions({ language, prompt: '\n$ ' + readlineLine, prePrompt }))
-            .then((result) => {
-                if (!result) {
-                    return
-                }
 
-                const completions = result as CompletionReturnData[]
-                const completionsStr = completions.map(c => c.choices[0].text).join('')
-                STORE.writeTextFile('completions.txt', completionsStr)
+        this.syncedPromise(new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(void 0)
+            }, 200)
+        }))
+            .then(() => {
+                this.syncedPromise(this.completeBackend.getCompletions({ language, prompt: '\n$ ' + readlineLine, prePrompt }))
+                    .then((result) => {
+                        if (!result) {
+                            return
+                        }
 
-                this.writer.clearAppended(readlineLine, parsedReadlineCursor)
-                if (completionsStr.length <= 0) {
-                    return
-                }
+                        const completions = result as CompletionReturnData[]
+                        const completionsStr = completions.map(c => c.choices[0].text).join('')
+                        STORE.writeTextFile('completions.txt', completionsStr)
 
-                this.writer.writeCompletion(readlineLine, parsedReadlineCursor, completionsStr)
+                        this.writer.clearAppended(readlineLine, parsedReadlineCursor)
+                        if (completionsStr.length <= 0) {
+                            return
+                        }
+
+                        this.writer.writeCompletion(readlineLine, parsedReadlineCursor, completionsStr)
+                    })
+                    .catch((e) => {
+                        if (e instanceof NewPromiseRegisteredError) {
+                            return
+                        }
+
+                        if (e instanceof TypeError) {
+                            if ((e?.cause as any)?.code === 'UND_ERR_CONNECT_TIMEOUT') {
+                                process.stdout.write(chalk.bgRed('Copilot timeout out'))
+                                return
+                            }
+
+                            console.error("type error", e)
+                        }
+
+                        console.error("not handled error", e)
+                    })
             })
-            .catch((e) => {
-                if (e instanceof NewPromiseRegisteredError) {
-                    return
-                }
-
-                if (e instanceof TypeError) {
-                    if ((e?.cause as any)?.code === 'UND_ERR_CONNECT_TIMEOUT') {
-                        process.stdout.write(chalk.bgRed('Copilot timeout out'))
-                        return
-                    }
-
-                    console.error("type error", e)
-                }
-
-                console.error("not handled error", e)
-            })
+            .catch((e) => { })
     }
 
     public async run(): Promise<void> {
