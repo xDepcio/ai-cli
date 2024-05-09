@@ -45,7 +45,7 @@ class Logger {
                 console.log(message);
                 break;
             case 'file':
-                fs.appendFileSync(this.options.logFile, message);
+                fs.appendFileSync(this.options.logFile, message + '\n');
                 break;
         }
     }
