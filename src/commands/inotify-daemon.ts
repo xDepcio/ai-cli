@@ -11,37 +11,12 @@ export default class InotifyDaemon extends Command {
     private syncedPromise = makeSyncedPromise()
     private completeBackend = new CompleteBackend()
     private writer = new StdoutWriter({ loadingMessage: ' (...)' })
-    // private oldStraceSize = 0
-    // private straceFd = fs.openSync('/home/olek/.ai-cli/strace.log', 'r')
-
-    // private readLatestWriteData() {
-    //     const newStraceSize = fs.statSync('./strace.log').size
-    //     const buffer = Buffer.alloc(newStraceSize - this.oldStraceSize)
-    //     fs.readSync(this.straceFd, buffer, 0, buffer.length, this.oldStraceSize)
-    //     this.oldStraceSize = newStraceSize
-    //     const latestWrite = buffer.toString().split('\n').at(-2)
-    //     if (!latestWrite) {
-    //         return {
-    //             fd: null,
-    //             data: null,
-    //             dataLength: null
-    //         }
-    //     }
-    //     const [fd, data, dataLength] = latestWrite!.replace(/write/g, '').slice(1, -1).split(', ')
-    //     return { fd, data, dataLength }
-    // }
 
     private async handleReadlineAccess() {
         const [readlineLine, readlineCursor, pwd, language, prePrompt] = fs.readFileSync('/home/olek/.ai-cli/readline_access.txt', 'utf8').split('<=%SEP%=>')
         if (!readlineLine || !readlineCursor || !language || !prePrompt || !pwd) {
             return
         }
-
-        // const { data } = this.readLatestWriteData()
-        // if (data === `"\\n"`) {
-        //     this.syncedPromise(new Promise(resolve => resolve(void 0)))
-        //     return
-        // }
 
         let parsedReadlineCursor = parseInt(readlineCursor)
         this.writer.writeLoading(readlineLine, parsedReadlineCursor)
