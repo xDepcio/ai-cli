@@ -1,20 +1,37 @@
 {
-  "name": "ai-cli",
+  "name": "mynewcli-test",
+  "description": "A new CLI generated with oclif",
   "version": "0.0.0",
-  "description": "oclif example Hello World CLI (ESM)",
-  "keywords": [
-    "oclif"
-  ],
-  "homepage": "https://github.com/xDepcio/ai-cli",
-  "bugs": "https://github.com/xDepcio/ai-cli/issues",
-  "repository": "xDepcio/ai-cli",
-  "license": "MIT",
   "author": "xDepcio",
-  "type": "module",
-  "exports": "./lib/index.js",
-  "types": "dist/index.d.ts",
   "bin": {
-    "ai-cli": "./bin/run.js"
+    "mynewcli-test": "./bin/run.js"
+  },
+  "bugs": "https://github.com/testy/mynewcli-test/issues",
+  "dependencies": {
+    "@oclif/core": "^3",
+    "@oclif/plugin-help": "^6",
+    "@oclif/plugin-plugins": "^5",
+    "chalk": "^5.3.0"
+  },
+  "devDependencies": {
+    "@oclif/prettier-config": "^0.2.1",
+    "@oclif/test": "^3",
+    "@types/chai": "^4",
+    "@types/mocha": "^10",
+    "@types/node": "^18",
+    "chai": "^4",
+    "eslint": "^8",
+    "eslint-config-oclif": "^5",
+    "eslint-config-oclif-typescript": "^3",
+    "eslint-config-prettier": "^9",
+    "mocha": "^10",
+    "oclif": "^4",
+    "shx": "^0.3.3",
+    "ts-node": "^10",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "files": [
     "/theme.json",
@@ -22,20 +39,17 @@
     "/dist",
     "/oclif.manifest.json"
   ],
-  "scripts": {
-    "build": "shx rm -rf dist && tsc -b",
-    "lint": "eslint . --ext .ts",
-    "prepack": "npm run build && oclif manifest && oclif readme",
-    "postpack": "shx rm -f oclif.manifest.json",
-    "prepare": "npm run build",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "posttest": "npm run lint",
-    "version": "oclif readme && git add README.md"
-  },
+  "homepage": "https://github.com/testy/mynewcli-test",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "type": "module",
   "oclif": {
-    "bin": "ai-cli",
+    "bin": "mynewcli-test",
+    "dirname": "mynewcli-test",
     "commands": "./dist/commands",
-    "dirname": "ai-cli",
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins"
@@ -48,32 +62,15 @@
     },
     "theme": "theme.json"
   },
-  "dependencies": {
-    "@oclif/core": "^3",
-    "@oclif/plugin-help": "^6",
-    "@oclif/plugin-plugins": "^5",
-    "chalk": "^5.3.0",
-    "uuid": "^9.0.1"
+  "repository": "testy/mynewcli-test",
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "lint": "eslint . --ext .ts",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "posttest": "npm run lint",
+    "prepack": "oclif manifest && oclif readme",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif readme && git add README.md"
   },
-  "devDependencies": {
-    "@oclif/prettier-config": "^0.2.1",
-    "@oclif/test": "^3",
-    "@types/chai": "^4",
-    "@types/mocha": "^10",
-    "@types/node": "^18",
-    "@types/uuid": "^9.0.8",
-    "chai": "^4",
-    "eslint": "^8",
-    "eslint-config-oclif": "^5",
-    "eslint-config-oclif-typescript": "^3",
-    "eslint-config-prettier": "^9.1.0",
-    "mocha": "^10",
-    "oclif": "^4.8.5",
-    "shx": "^0.3.4",
-    "ts-node": "^10.9.2",
-    "typescript": "^5"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  }
+  "types": "dist/index.d.ts"
 }
