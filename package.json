@@ -1,12 +1,12 @@
 {
-  "name": "mynewcli-test",
+  "name": "ai-cli",
   "description": "A new CLI generated with oclif",
   "version": "0.0.0",
   "author": "xDepcio",
   "bin": {
-    "mynewcli-test": "./bin/run.js"
+    "ai-cli": "./bin/run.js"
   },
-  "bugs": "https://github.com/testy/mynewcli-test/issues",
+  "bugs": "https://github.com/xDepcio/ai-cli/issues",
   "dependencies": {
     "@oclif/core": "^3",
     "@oclif/plugin-help": "^6",
@@ -39,7 +39,7 @@
     "/dist",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/testy/mynewcli-test",
+  "homepage": "https://github.com/xDepcio/ai-cli",
   "keywords": [
     "oclif"
   ],
@@ -47,8 +47,8 @@
   "main": "dist/index.js",
   "type": "module",
   "oclif": {
-    "bin": "mynewcli-test",
-    "dirname": "mynewcli-test",
+    "bin": "ai-cli",
+    "dirname": "ai-cli",
     "commands": "./dist/commands",
     "plugins": [
       "@oclif/plugin-help",
@@ -62,7 +62,7 @@
     },
     "theme": "theme.json"
   },
-  "repository": "testy/mynewcli-test",
+  "repository": "xDepcio/ai-cli",
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
     "lint": "eslint . --ext .ts",
