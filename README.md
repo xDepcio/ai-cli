@@ -20,7 +20,7 @@ $ npm install -g ai-cli
 $ ai-cli COMMAND
 running command...
 $ ai-cli (--version)
-ai-cli/0.0.0 linux-x64 node-v21.5.0
+ai-cli/0.0.1 linux-x64 node-v21.5.0
 $ ai-cli --help [COMMAND]
 USAGE
   $ ai-cli COMMAND
@@ -29,7 +29,12 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`ai-cli complete`](#ai-cli-complete)
+* [`ai-cli daemon`](#ai-cli-daemon)
+* [`ai-cli hello PERSON`](#ai-cli-hello-person)
+* [`ai-cli hello world`](#ai-cli-hello-world)
 * [`ai-cli help [COMMAND]`](#ai-cli-help-command)
+* [`ai-cli inotify-daemon`](#ai-cli-inotify-daemon)
 * [`ai-cli plugins`](#ai-cli-plugins)
 * [`ai-cli plugins add PLUGIN`](#ai-cli-plugins-add-plugin)
 * [`ai-cli plugins:inspect PLUGIN...`](#ai-cli-pluginsinspect-plugin)
@@ -40,6 +45,86 @@ USAGE
 * [`ai-cli plugins uninstall [PLUGIN]`](#ai-cli-plugins-uninstall-plugin)
 * [`ai-cli plugins unlink [PLUGIN]`](#ai-cli-plugins-unlink-plugin)
 * [`ai-cli plugins update`](#ai-cli-plugins-update)
+* [`ai-cli signin`](#ai-cli-signin)
+* [`ai-cli strace-daemon`](#ai-cli-strace-daemon)
+
+## `ai-cli complete`
+
+```
+USAGE
+  $ ai-cli complete -l <value> [-f <value>] [-t <value>] [-s] [-p <value>]
+
+FLAGS
+  -f, --file=<value>       Take prompt from file
+  -l, --language=<value>   (required) Specify completion language.
+  -p, --prePrompt=<value>  Text to prepend to prompt.
+  -s, --stdin              Use stdin redirection for prompt
+  -t, --text=<value>       Take prompt from text string
+
+EXAMPLES
+  $ ai-cli complete -l python -f main.py
+
+  $ ai-cli complete -s <<EOF
+
+  $ ai-cli complete -s <prompt.txt
+
+  $ ai-cli complete -f prompt.txt
+
+  $ ai-cli complete -t "Copilot complete this line..."
+```
+
+_See code: [src/commands/complete.ts](https://github.com/xDepcio/ai-cli/blob/v0.0.1/src/commands/complete.ts)_
+
+## `ai-cli daemon`
+
+```
+USAGE
+  $ ai-cli daemon
+```
+
+_See code: [src/commands/daemon.ts](https://github.com/xDepcio/ai-cli/blob/v0.0.1/src/commands/daemon.ts)_
+
+## `ai-cli hello PERSON`
+
+Say hello
+
+```
+USAGE
+  $ ai-cli hello PERSON -f <value>
+
+ARGUMENTS
+  PERSON  Person to say hello to
+
+FLAGS
+  -f, --from=<value>  (required) Who is saying hello
+
+DESCRIPTION
+  Say hello
+
+EXAMPLES
+  $ oex hello friend --from oclif
+  hello friend from oclif! (./src/commands/hello/index.ts)
+```
+
+_See code: [src/commands/hello/index.ts](https://github.com/xDepcio/ai-cli/blob/v0.0.1/src/commands/hello/index.ts)_
+
+## `ai-cli hello world`
+
+Say hello world
+
+```
+USAGE
+  $ ai-cli hello world
+
+DESCRIPTION
+  Say hello world
+
+EXAMPLES
+  $ ai-cli hello world
+  hello world! (./src/commands/hello/world.ts)
+```
+
+_See code: [src/commands/hello/world.ts](https://github.com/xDepcio/ai-cli/blob/v0.0.1/src/commands/hello/world.ts)_
 
 ## `ai-cli help [COMMAND]`
 
@@ -60,6 +145,15 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v6.0.21/src/commands/help.ts)_
+
+## `ai-cli inotify-daemon`
+
+```
+USAGE
+  $ ai-cli inotify-daemon
+```
+
+_See code: [src/commands/inotify-daemon.ts](https://github.com/xDepcio/ai-cli/blob/v0.0.1/src/commands/inotify-daemon.ts)_
 
 ## `ai-cli plugins`
 
@@ -349,4 +443,30 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.0.19/src/commands/plugins/update.ts)_
+
+## `ai-cli signin`
+
+Sign in to Github.
+
+```
+USAGE
+  $ ai-cli signin
+
+DESCRIPTION
+  Sign in to Github.
+```
+
+_See code: [src/commands/signin.ts](https://github.com/xDepcio/ai-cli/blob/v0.0.1/src/commands/signin.ts)_
+
+## `ai-cli strace-daemon`
+
+```
+USAGE
+  $ ai-cli strace-daemon -p <value>
+
+FLAGS
+  -p, --pid=<value>  (required) bash pid to trace
+```
+
+_See code: [src/commands/strace-daemon.ts](https://github.com/xDepcio/ai-cli/blob/v0.0.1/src/commands/strace-daemon.ts)_
 <!-- commandsstop -->

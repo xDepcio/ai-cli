@@ -1,7 +1,10 @@
 #!/bin/bash
 
-strace_log_file="/home/olek/.ai-cli/strace.log"
-status_file="/home/olek/.ai-cli/status.txt"
+AI_CLI_DIR="$HOME/.ai-cli"
+AI_CLI_SCRIPTS_DIR="$AI_CLI_DIR/scripts"
+
+strace_log_file="$AI_CLI_DIR/strace.log"
+status_file="$AI_CLI_DIR/status.txt"
 
 if [ -z "$1" ]; then
     echo "Usage: $0 <pid>"
@@ -24,15 +27,15 @@ while true; do
         continue
     fi
 
-    mapfile -t lines < /home/olek/.ai-cli/readline_contents.txt
+    mapfile -t lines < $AI_CLI_DIR/readline_contents.txt
     last_control_num="${lines[3]}"
 
     perl -e 'ioctl STDOUT, 0x5412, $_ for split //, do{ chomp($_ = " "); $_ }' ;
 
-    mapfile -t lines < /home/olek/.ai-cli/readline_contents.txt
+    mapfile -t lines < $AI_CLI_DIR/readline_contents.txt
     while [ "${lines[3]}" = "$last_control_num" ]; do
         saved_control="${lines[3]}"
-        mapfile -t lines < /home/olek/.ai-cli/readline_contents.txt
+        mapfile -t lines < $AI_CLI_DIR/readline_contents.txt
         if [ -z "${lines[3]}" ]; then
             lines[3]="$saved_control"
             continue

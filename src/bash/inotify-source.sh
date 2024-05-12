@@ -1,5 +1,8 @@
 #!/bin/bash
 
+AI_CLI_DIR="$HOME/.ai-cli"
+AI_CLI_SCRIPTS_DIR="$AI_CLI_DIR/scripts"
+
 control_number=0
 _mt_test_f()
 {
@@ -8,29 +11,29 @@ _mt_test_f()
     echo -n "$READLINE_LINE
 $READLINE_POINT
 $PWD
-$control_number" >| ~/.ai-cli/readline_contents.txt
+$control_number" >| $AI_CLI_DIR/readline_contents.txt
 }
 
 bind -x '" ": _mt_test_f'
 
 _fill_complete()
 {
-    completion=$(cat ~/.ai-cli/completions.txt)
+    completion=$(cat $AI_CLI_DIR/completions.txt)
     completion_length=$(echo -n "$completion" | wc -c)
 
     READLINE_LINE="$READLINE_LINE$completion"
     READLINE_POINT=$(($READLINE_POINT + $completion_length))
-    echo -n '' >| ~/.ai-cli/completions.txt
+    echo -n '' >| $AI_CLI_DIR/completions.txt
 }
 
 bind -x '"\C- ": _fill_complete'
 
 _fill_word()
 {
-    next_word=$(rg '^ *[!-~]+' ~/.ai-cli/completions.txt -o)
+    next_word=$(rg '^ *[!-~]+' $AI_CLI_DIR/completions.txt -o)
     next_word_length=$(echo -n "$next_word" | wc -c)
-    sd '^ *[!-~]+' '' ~/.ai-cli/completions.txt
-    rest=$(cat ~/.ai-cli/completions.txt)
+    sd '^ *[!-~]+' '' $AI_CLI_DIR/completions.txt
+    rest=$(cat $AI_CLI_DIR/completions.txt)
     rest_length=$(echo -n "$rest" | wc -c)
 
     READLINE_LINE="$READLINE_LINE$next_word"
@@ -47,12 +50,12 @@ switch_on_message="Terminal Copilot is now ON 🤖"
 switch_off_message="Terminal Copilot is now OFF 🤖"
 _switch_on_off()
 {
-    status=$(cat ~/.ai-cli/status.txt)
+    status=$(cat $AI_CLI_DIR/status.txt)
     if [ "$status" = "on" ]; then
-        echo -n "off" >| ~/.ai-cli/status.txt
+        echo -n "off" >| $AI_CLI_DIR/status.txt
         echo -e "\033[33;1m${switch_off_message}\033[0m"
     else
-        echo -n "on" >| ~/.ai-cli/status.txt
+        echo -n "on" >| $AI_CLI_DIR/status.txt
         echo -e "\033[32;1m${switch_on_message}\033[0m"
     fi
 }

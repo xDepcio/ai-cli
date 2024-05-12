@@ -9,9 +9,9 @@ else
 fi
 
 cd $AI_CLI_DIR
-wget https://github.com/xDepcio/ai-cli/releases/download/cli/ai-cli-v0.0.0-c818b7f-linux-x64.tar.gz
-tar -xvf ai-cli-v0.0.0-c818b7f-linux-x64.tar.gz
-rm ai-cli-v0.0.0-c818b7f-linux-x64.tar.gz
+wget https://github.com/xDepcio/ai-cli/releases/download/cli/ai-cli-v0.0.1-2866a45-linux-x64.tar.gz
+tar -xvf ai-cli-v0.0.1-2866a45-linux-x64.tar.gz
+rm ai-cli-v0.0.1-2866a45-linux-x64.tar.gz
 
 mkdir $AI_CLI_SCRIPTS_DIR
 cd $AI_CLI_SCRIPTS_DIR
