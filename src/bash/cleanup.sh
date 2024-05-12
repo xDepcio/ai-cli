@@ -7,9 +7,11 @@ strace_shell_regex='strace.sh'
 inotify_start_shell_regex='inotify-start.sh'
 inotifywait_regex='inotifywait'
 
-combined_regex="($node_daemon_regex)|($my_inotify_regex)|($strace_regex)|($strace_shell_regex)|($inotify_start_shell_regex)|($inotifywait_regex)"
+# combined_regex="($node_daemon_regex)|($my_inotify_regex)|($strace_regex)|($strace_shell_regex)|($inotify_start_shell_regex)|($inotifywait_regex)"
+combined_regex="\($node_daemon_regex\)\|\($my_inotify_regex\)\|\($strace_regex\)\|\($strace_shell_regex\)\|\($inotify_start_shell_regex\)\|\($inotifywait_regex\)"
 
-kill $(ps aux | rg "$combined_regex" | awk '{print $2}')
+# kill $(ps aux | rg "$combined_regex" | awk '{print $2}')
+kill $(ps aux | grep "$combined_regex" | awk '{print $2}')
 
 echo -n '' >| ~/.ai-cli/completions.txt
 echo -n '' >| ~/.ai-cli/readline_access.txt
