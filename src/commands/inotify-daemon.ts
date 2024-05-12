@@ -6,7 +6,7 @@ import { CompletionReturnData } from '../lib/copilot-api.js'
 import { NewPromiseRegisteredError, makeSyncedPromise, sleepPromise } from '../lib/promise-lifo.js'
 import { StdoutWriter } from '../lib/stdout-writer.js'
 import { CompleteBackend } from './complete.js'
-import { KEYPRESS_TO_COMPLETION_FETCH_TIMEOUT } from '../constants.js'
+import { KEYPRESS_TO_COMPLETION_FETCH_TIMEOUT, STORE_DIR_PATH } from '../constants.js'
 
 export default class InotifyDaemon extends Command {
     private syncedPromise = makeSyncedPromise()
@@ -14,7 +14,7 @@ export default class InotifyDaemon extends Command {
     private writer = new StdoutWriter({ loadingMessage: ' (...)' })
 
     private async handleReadlineAccess() {
-        const [readlineLine, readlineCursor, pwd, language, prePrompt] = fs.readFileSync('/home/olek/.ai-cli/readline_access.txt', 'utf8').split('<=%SEP%=>')
+        const [readlineLine, readlineCursor, pwd, language, prePrompt] = fs.readFileSync(`${STORE_DIR_PATH}/.ai-cli/readline_access.txt`, 'utf8').split('<=%SEP%=>')
         if (!readlineLine || !readlineCursor || !language || !prePrompt || !pwd) {
             return
         }
@@ -66,7 +66,7 @@ export default class InotifyDaemon extends Command {
         const { args, flags } = await this.parse(InotifyDaemon)
 
         return new Promise((resolve, reject) => {
-            const watcher = fs.watch('/home/olek/.ai-cli/readline_access.txt', () => this.handleReadlineAccess())
+            const watcher = fs.watch(`${STORE_DIR_PATH}/readline_access.txt`, () => this.handleReadlineAccess())
             watcher.on('close', () => {
                 resolve()
             })
