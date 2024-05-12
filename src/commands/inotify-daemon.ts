@@ -14,7 +14,7 @@ export default class InotifyDaemon extends Command {
     private writer = new StdoutWriter({ loadingMessage: ' (...)' })
 
     private async handleReadlineAccess() {
-        const [readlineLine, readlineCursor, pwd, language, prePrompt] = fs.readFileSync(`${STORE_DIR_PATH}/.ai-cli/readline_access.txt`, 'utf8').split('<=%SEP%=>')
+        const [readlineLine, readlineCursor, pwd, language, prePrompt] = fs.readFileSync(`${STORE_DIR_PATH}/readline_access.txt`, 'utf8').split('<=%SEP%=>')
         if (!readlineLine || !readlineCursor || !language || !prePrompt || !pwd) {
             return
         }

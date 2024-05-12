@@ -44,5 +44,5 @@ while true; do
 
     echo -n "${lines[0]}<=%SEP%=>${lines[1]}<=%SEP%=>${lines[2]}<=%SEP%=>bash<=%SEP%=>$ ls -al
 `ls -al ${lines[2]}`
-" >| ~/.ai-cli/readline_access.txt
+" >| $AI_CLI_DIR/readline_access.txt
 done
