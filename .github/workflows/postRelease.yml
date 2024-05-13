@@ -45,8 +45,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: find ./dist/ -name "*linux-x64*"
-        asset_name: find ./dist/ -name "*linux-x64*"
+        asset_path: $(find ./dist/ -name "*linux-x64*")
+        asset_name: $(find ./dist/ -name "*linux-x64*")
         asset_content_type: application/gzip
 
     - uses: eregon/publish-release@v1
@@ -54,5 +54,3 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         release_id: ${{ steps.create_release.outputs.id }}
-
-        
