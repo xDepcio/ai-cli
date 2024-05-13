@@ -43,7 +43,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: cli
+        tag_name: ${{ env.ASSET_NAME }}
         release_name: Release ${{ github.ref }}
         draft: true
         prerelease: false
