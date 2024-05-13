@@ -29,6 +29,11 @@ jobs:
         npm run build
         ./node_modules/.bin/oclif pack tarballs --parallel --no-xz
 
+    - name: Rename files
+      run: |
+        chmod +x ./src/bash/workflows/rename-dist.sh
+        ./src/bash/workflows/rename-dist.sh
+
     - name: save asset name
       id: save_asset_name
       run: |
@@ -36,6 +41,8 @@ jobs:
         echo "ASSET_PATH=$ASSET_PATH" >> $GITHUB_ENV
         ASSET_NAME=$(basename $ASSET_PATH)
         echo "ASSET_NAME=$ASSET_NAME" >> $GITHUB_ENV
+        TAG_NAME="$ASSET_NAME-$RANDOM"
+        echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
     - name: Create Draft Release
       id: create_release
@@ -43,8 +50,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ env.ASSET_NAME }}
-        release_name: Release ${{ github.ref }}
+        tag_name: ${{ env.TAG_NAME }}
+        release_name: Release ${{ env.ASSET_NAME }}
         draft: true
         prerelease: false
 
