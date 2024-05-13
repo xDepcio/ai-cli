@@ -29,6 +29,14 @@ jobs:
         npm run build
         ./node_modules/.bin/oclif pack tarballs --parallel --no-xz
 
+    - name: save asset name
+      id: save_asset_name
+      run: |
+        ASSET_PATH=$(find ./dist/ -name "*linux-x64*")
+        echo "ASSET_PATH=$ASSET_PATH" >> $GITHUB_ENV
+        ASSET_NAME=$(basename $ASSET_PATH)
+        echo "ASSET_NAME=$ASSET_NAME" >> $GITHUB_ENV
+
     - name: Create Draft Release
       id: create_release
       uses: actions/create-release@v1
@@ -45,8 +53,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: $(find ./dist/ -name "*linux-x64*")
-        asset_name: $(find ./dist/ -name "*linux-x64*")
+        asset_path: ${{  env.ASSET_NAME }}
+        asset_name: ${{  env.ASSET_NAME }}
         asset_content_type: application/gzip
 
     - uses: eregon/publish-release@v1
