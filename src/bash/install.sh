@@ -27,7 +27,7 @@ if [ -z "$(which inotifywait)" ]; then
     sudo apt install inotify-tools
 fi
 
-if [ -z "$(grep "alias ai-cli='source $AI_CLI_DIR/scripts/run.sh" $HOME/.bashrc)" ]; then
+if [ -z "$(grep "# ai-cli stuff" $HOME/.bashrc)" ]; then
     echo "# ai-cli stuff" >> $HOME/.bashrc
     echo "export AI_CLI_DIR=\"\$HOME/.ai-cli\"" >> $HOME/.bashrc
     echo "alias ai-cli-signin=\"\$AI_CLI_DIR/ai-cli/bin/ai-cli signin\"" >> $HOME/.bashrc

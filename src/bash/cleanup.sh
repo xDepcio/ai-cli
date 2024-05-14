@@ -20,3 +20,4 @@ echo -n '' >| $AI_CLI_DIR/completions.txt
 echo -n '' >| $AI_CLI_DIR/readline_access.txt
 echo -n '' >| $AI_CLI_DIR/readline_contents.txt
 echo -n 'on' >| $AI_CLI_DIR/status.txt
+echo -n '' >| $AI_CLI_DIR/strace.log
