@@ -6,7 +6,7 @@ AI_CLI_SCRIPTS_DIR="$AI_CLI_DIR/scripts"
 
 $AI_CLI_SCRIPTS_DIR/cleanup.sh
 source "$AI_CLI_SCRIPTS_DIR/inotify-source.sh"
-$AI_CLI_SCRIPTS_DIR/strace.sh $$ &
+# $AI_CLI_SCRIPTS_DIR/strace.sh $$ &
 $AI_CLI_SCRIPTS_DIR/inotify-start.sh $$ &
 $AI_CLI_DIR/ai-cli/bin/ai-cli inotify-daemon &
 
