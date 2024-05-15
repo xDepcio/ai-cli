@@ -29,7 +29,7 @@ fi
 
 if [ -z "$(grep "# ai-cli stuff" $HOME/.bashrc)" ]; then
     echo "# ai-cli stuff" >> $HOME/.bashrc
-    echo "export AI_CLI_DIR=\\"\\$HOME/.ai-cli\\"" >> $HOME/.bashrc
-    echo "alias ai-cli-signin=\\"\\$AI_CLI_DIR/ai-cli/bin/ai-cli signin\\"" >> $HOME/.bashrc
-    echo "alias ai-cli=\\"strace -qqq -f -p \\$$ -s 1000 -e trace=write 2>&1 | grep --line-buffered --only-matching 'write(2, \\"[!-~ A-Za-z\*]\\", 1)' >| \\$AI_CLI_DIR/strace.log & source \\$AI_CLI_DIR/scripts/run.sh\\"" >> $HOME/.bashrc
+    echo "export AI_CLI_DIR=\\\"\\\$HOME/.ai-cli\\\"" >> $HOME/.bashrc
+    echo "alias ai-cli-signin=\\\"\\\$AI_CLI_DIR/ai-cli/bin/ai-cli signin\\\"" >> $HOME/.bashrc
+    echo "alias ai-cli=\\\"strace -qqq -f -p \\\$$ -s 1000 -e trace=write 2>&1 | grep --line-buffered --only-matching 'write(2, \\\"[!-~ A-Za-z\*]\\\", 1)' >| \\\$AI_CLI_DIR/strace.log & source \\\$AI_CLI_DIR/scripts/run.sh\\\"" >> $HOME/.bashrc
 fi
