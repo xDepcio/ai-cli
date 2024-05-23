@@ -4,7 +4,7 @@ AI_CLI_SCRIPTS_DIR="$AI_CLI_DIR/scripts"
 
 # nvm use v21.5.0
 
-$AI_CLI_SCRIPTS_DIR/cleanup.sh
+# $AI_CLI_SCRIPTS_DIR/cleanup.sh
 source "$AI_CLI_SCRIPTS_DIR/inotify-source.sh"
 # $AI_CLI_SCRIPTS_DIR/strace.sh $$ &
 $AI_CLI_SCRIPTS_DIR/inotify-start.sh $$ &
