@@ -4,7 +4,9 @@ ai-cli
 Terminal completions for bash using github copilot
 
 <!-- toc -->
+* [Requirements](#requirements)
 * [Installation](#installation)
+* [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
 
