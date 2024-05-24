@@ -1,10 +1,9 @@
-import { Args, Command, Flags, ux } from '@oclif/core'
-import fs from 'fs'
-import { CompleteBackend } from './complete.js'
-import { CompletionReturnData } from '../lib/copilot-api.js'
-import { STORE } from '../index.js'
+import { Command } from '@oclif/core'
 import chalk from 'chalk'
+import fs from 'fs'
+import { STORE } from '../index.js'
 import { curNLeft, curNRight } from '../lib/ansi-escapes.js'
+import { CompleteBackend } from './complete.js'
 
 type DaemonMessage = 'suggest' | 'exit' | ''
 type DaemonParsedMessage = {

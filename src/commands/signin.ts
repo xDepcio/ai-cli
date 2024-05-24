@@ -1,6 +1,6 @@
-import { Args, Command, Flags } from '@oclif/core'
-import { CopilotApi } from '../lib/copilot-api.js'
+import { Command } from '@oclif/core'
 import { STORE } from '../index.js'
+import { CopilotApi } from '../lib/copilot-api.js'
 
 export default class Signin extends Command {
     static override description = 'Sign in to Github.'

@@ -1,12 +1,12 @@
 import { Command } from '@oclif/core'
 import chalk from 'chalk'
 import fs from 'fs'
+import { KEYPRESS_TO_COMPLETION_FETCH_TIMEOUT, STORE_DIR_PATH } from '../constants.js'
 import { STORE } from '../index.js'
 import { CompletionReturnData } from '../lib/copilot-api.js'
 import { NewPromiseRegisteredError, makeSyncedPromise, sleepPromise } from '../lib/promise-lifo.js'
 import { StdoutWriter } from '../lib/stdout-writer.js'
 import { CompleteBackend } from './complete.js'
-import { KEYPRESS_TO_COMPLETION_FETCH_TIMEOUT, STORE_DIR_PATH } from '../constants.js'
 
 export default class InotifyDaemon extends Command {
     private syncedPromise = makeSyncedPromise()

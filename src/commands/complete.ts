@@ -1,7 +1,7 @@
-import { Args, Command, Flags } from '@oclif/core'
-import { CompletionReturnData, CopilotApi } from '../lib/copilot-api.js'
-import { STORE } from '../index.js'
+import { Command, Flags } from '@oclif/core'
 import fs from 'fs'
+import { STORE } from '../index.js'
+import { CompletionReturnData, CopilotApi } from '../lib/copilot-api.js'
 
 export default class Complete extends Command {
     // static override args = {
