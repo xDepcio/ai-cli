@@ -1,9 +1,8 @@
 import { Command } from '@oclif/core'
 import chalk from 'chalk'
 import fs from 'fs'
-import { STORE } from '../index.js'
 import { curNLeft, curNRight } from '../lib/ansi-escapes.js'
-import { CompleteBackend } from './complete.js'
+import { checkProcessExists } from '../lib/process-checker.js'
 
 
 export default class PassiveCompletionDaemon extends Command {
@@ -20,6 +19,16 @@ export default class PassiveCompletionDaemon extends Command {
         return { readlineLine, readlinePoint }
     }
 
+    private getPassiveCompletionTriggerPid() {
+        while (true) {
+            try {
+                const pid = fs.readFileSync('/home/adrwal/passive-completion-trigger-pid.txt', 'utf8')
+                return parseInt(pid)
+            }
+            catch (e) { }
+        } // >:(
+    }
+
     private canComplete() {
         // @ts-ignore
         return this.timeout._destroyed
@@ -29,8 +38,10 @@ export default class PassiveCompletionDaemon extends Command {
         // const { args, flags } = await this.parse(PassiveCompletionDaemon)
 
         return new Promise((resolve, reject) => {
-            const watcher = fs.watch('/home/adrwal/passive-completion.txt', {}, async (eventType, filename) => {
-                await new Promise(resolve => setTimeout(resolve, 500))
+            fs.watch('/home/adrwal/passive-completion.txt', {}, async (eventType, filename) => {
+                const triggerPid = this.getPassiveCompletionTriggerPid()
+                while (checkProcessExists(triggerPid)) { }
+
                 if (!this.canComplete()) {
                     return
                 }

@@ -10,7 +10,8 @@ $ $READLINE_LINE"
 
     echo -n "$READLINE_LINE" >| ~/readline-line.txt
     echo -n "$READLINE_POINT" >| ~/readline-point.txt
-    echo -n "$completion" >| ~/passive-completion.txt # this write triggers daemon
+    read < <( echo -n "$completion" >| ~/passive-completion.txt & echo $! ) # this write triggers daemon
+    echo -n $REPLY >| ~/passive-completion-trigger-pid.txt
 }
 
 bind -x '"\eq": _complete_terminal'
