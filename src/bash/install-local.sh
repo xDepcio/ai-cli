@@ -6,10 +6,10 @@ AI_CLI_SCRIPTS_DIR="$AI_CLI_DIR/scripts"
 nvm use v21.5.0
 npm run build
 
+rm -rf $AI_CLI_DIR
 mkdir $AI_CLI_DIR
-rm -rf $AI_CLI_SCRIPTS_DIR
 mkdir $AI_CLI_SCRIPTS_DIR
-cp src/bash/*.sh $AI_CLI_SCRIPTS_DIR
+cp ~/my-projects/ai-cli/src/bash/* $AI_CLI_SCRIPTS_DIR -r
 chmod +x $AI_CLI_SCRIPTS_DIR/*.sh
 
 rm -rf $AI_CLI_DIR/ai-cli
