@@ -2,21 +2,35 @@
 
 AI_CLI_PASSIVE_COMPLETION_DAEMON_PID_FILE="$AI_CLI_DIR/passive-completion-daemon-pid.txt"
 
+_remove_matching_prefix_suffix()
+{
+    local first_string="$1"
+    local second_string="$2"
+    local length=${#first_string}
+    local result="$second_string"
+
+    for (( i=1; i<=length; i++ )); do
+        suffix="${first_string: -i}"
+
+        if [[ "$second_string" == "$suffix"* ]]; then
+            result="${second_string#$suffix}"
+            break
+        fi
+    done
+
+    echo "$result"
+}
+
+
 _fill_complete()
 {
-    # echo $READLINE_LINE
-    # echo $READLINE_POINT
-    # completion=$(cat $AI_CLI_DIR/passive-completion.txt)
-    # completion_length=${#completion}
+    completion=$(cat $AI_CLI_DIR/passive-completion.txt)
+    remaining_completion=$(_remove_matching_prefix_suffix "$READLINE_LINE" "$completion")
 
-    # READLINE_LINE="$READLINE_LINE$completion"
-    # READLINE_POINT=1
+    READLINE_LINE="$READLINE_LINE$remaining_completion"
+    READLINE_POINT=${#READLINE_LINE}
 
-    # echo $READLINE_LINE
-    # echo $READLINE_POINT
-
-    # echo -n '' >| $AI_CLI_DIR/passive-completion.txt
-    echo xd > /dev/null
+    echo -n '' >| $AI_CLI_DIR/passive-completion.txt
 }
 
 bind -x '"\C- ": _fill_complete'
