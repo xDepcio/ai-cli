@@ -46,12 +46,12 @@ _complete_terminal()
 $(ls -al $PWD)
 $ $READLINE_LINE"
 
-    completion=$(./bin/run.js complete -l bash -t "$prompt")
+    completion=$($AI_CLI_DIR/ai-cli/bin/ai-cli complete -l bash -t "$prompt")
 
-    echo -n "$READLINE_LINE" >| ~/readline-line.txt
-    echo -n "$READLINE_POINT" >| ~/readline-point.txt
-    read < <( echo -n "$completion" >| ~/passive-completion.txt & echo $! ) # this write triggers daemon
-    echo -n $REPLY >| ~/passive-completion-trigger-pid.txt
+    echo -n "$READLINE_LINE" >| $AI_CLI_DIR/readline-line.txt
+    echo -n "$READLINE_POINT" >| $AI_CLI_DIR/readline-point.txt
+    read < <( echo -n "$completion" >| $AI_CLI_DIR/passive-completion.txt & echo $! ) # this write triggers daemon
+    echo -n $REPLY >| $AI_CLI_DIR/passive-completion-trigger-pid.txt
 }
 
 bind -x '"\eq": _complete_terminal'

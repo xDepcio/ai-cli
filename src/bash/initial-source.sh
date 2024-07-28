@@ -1,3 +1,6 @@
+source $AI_CLI_SCRIPTS_DIR/config.sh
+alias ai-cli-signin="$AI_CLI_DIR/ai-cli/bin/ai-cli signin"
+
 case $AI_CLI_MODE in
     passive-node-heavy-bind-completion)
         source $AI_CLI_SCRIPTS_DIR/modes/passive-node-heavy-bind-completion/source.sh
