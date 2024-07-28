@@ -18,7 +18,8 @@ rm ai-cli-v0.0.1-linux-x64.tar.gz
 mkdir $AI_CLI_SCRIPTS_DIR
 cd $AI_CLI_SCRIPTS_DIR
 wget https://raw.githubusercontent.com/xDepcio/ai-cli/master/src/bash/config.sh
-chmod +x config.sh
+wget https://raw.githubusercontent.com/xDepcio/ai-cli/master/src/bash/initial-source.sh
+chmod +x config.sh initial-source.sh
 
 mkdir $AI_CLI_PASSIVE_NODE_HEAVY_BIND_COMPLETION_MODE_DIR
 cd $AI_CLI_PASSIVE_NODE_HEAVY_BIND_COMPLETION_MODE_DIR
