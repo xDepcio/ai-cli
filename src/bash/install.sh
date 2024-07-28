@@ -21,12 +21,12 @@ wget https://raw.githubusercontent.com/xDepcio/ai-cli/master/src/bash/config.sh
 wget https://raw.githubusercontent.com/xDepcio/ai-cli/master/src/bash/initial-source.sh
 chmod +x config.sh initial-source.sh
 
-mkdir $AI_CLI_PASSIVE_NODE_HEAVY_BIND_COMPLETION_MODE_DIR
+mkdir $AI_CLI_PASSIVE_NODE_HEAVY_BIND_COMPLETION_MODE_DIR -p
 cd $AI_CLI_PASSIVE_NODE_HEAVY_BIND_COMPLETION_MODE_DIR
 wget https://raw.githubusercontent.com/xDepcio/ai-cli/master/src/bash/modes/passive-node-heavy-bind-completion/source.sh
 chmod +x source.sh
 
-mkdir $AI_CLI_ACTIVE_STRACE_INOTIFY_MODE_DIR
+mkdir $AI_CLI_ACTIVE_STRACE_INOTIFY_MODE_DIR -p
 cd $AI_CLI_ACTIVE_STRACE_INOTIFY_MODE_DIR
 wget https://raw.githubusercontent.com/xDepcio/ai-cli/master/src/bash/modes/active-strace-inotify/inotify-source.sh
 wget https://raw.githubusercontent.com/xDepcio/ai-cli/master/src/bash/modes/active-strace-inotify/run.sh
