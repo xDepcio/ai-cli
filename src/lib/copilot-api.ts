@@ -1,3 +1,4 @@
+import { inspect } from "util"
 import { FILE_LOGGER } from "../index.js"
 import { IStore } from "./store.js"
 
@@ -11,6 +12,11 @@ class ErrorTokenNotSet extends Error {
         super('Github access token not set. Please run `signin` to authenticate.')
     }
 
+}
+
+type ChatMessage = {
+    role: "user" | "assistant",
+    content: string
 }
 
 class CopilotApi {
@@ -130,6 +136,34 @@ class CopilotApi {
         return allMatchedData
     }
 
+    public async chatCompletion({ chat }: { chat: ChatMessage[] }) {
+        await this.generateNewToken()
+        const token = this.store.readJsonFile<CopilotApiConfig>(this.configFile).githubToken
+
+        const chatResponse = await fetch('https://api.githubcopilot.com/chat/completions', {
+            method: "POST",
+            headers: {
+                'authorization': `Bearer ${token}`,
+                'Editor-Version': 'vscode/1.80.1',
+            },
+            body: JSON.stringify({
+                intent: false,
+                model: 'gpt-4o',
+                temperature: 0,
+                top_p: 1,
+                n: 1,
+                stream: true,
+                messages: chat
+            })
+        })
+
+        const chatResponseText = await chatResponse.text()
+        const matchedDataArr = this.reduceIter(chatResponseText.matchAll(/\{.*\}/g))
+            .map(match => JSON.parse(match)) as ChatCompletionChunk[]
+
+        return matchedDataArr.map((v) => v.choices[0]?.delta.content).join('')
+    }
+
     private reduceIter(iter: IterableIterator<RegExpExecArray>) {
         let res = []
         for (const match of iter) {
@@ -137,6 +171,48 @@ class CopilotApi {
         }
         return res
     }
+}
+
+type ChatCompletionChunk = {
+    id: string,
+    created: number,
+    model: string,
+    system_fingerprint: string,
+    choices: [
+        {
+            index: number,
+            content_filter_offsets: {
+                check_offset: number,
+                start_offset: number,
+                end_offset: number
+            },
+            content_filter_results: {
+                error: {
+                    code: string,
+                    message: string
+                },
+                hate: {
+                    filtered: boolean,
+                    severity: string
+                },
+                self_harm: {
+                    filtered: boolean,
+                    severity: string
+                },
+                sexual: {
+                    filtered: boolean,
+                    severity: string
+                },
+                violence: {
+                    filtered: boolean,
+                    severity: string
+                }
+            },
+            delta: {
+                content: string
+            }
+        }
+    ]
 }
 
 type CompletionReturnData = {
