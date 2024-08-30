@@ -1,5 +1,4 @@
-import { expect, test } from '@oclif/test'
-import { NewPromiseRegisteredError, makeSyncedPromise } from '../../src/lib/promise-lifo.js'
+import { expect } from '@oclif/test'
 import { CopilotApi } from '../../src/lib/copilot-api.js'
 import { STORE } from '../../src/index.js'
 import { describe, it } from 'mocha'
@@ -17,19 +16,17 @@ describe('CopilotApi', () => {
             fetch = async function () {
                 return {
                     text: async () => {
-                        return JSON.stringify({
-                            completion: [
-                                {
-                                    choices: [
-                                        {
-                                            delta: {
-                                                content: 'chmod'
-                                            }
+                        return JSON.stringify([
+                            {
+                                choices: [
+                                    {
+                                        delta: {
+                                            content: 'chmod'
                                         }
-                                    ]
-                                },
-                            ]
-                        })
+                                    },
+                                ]
+                            }
+                        ])
                     }
                 }
             }
