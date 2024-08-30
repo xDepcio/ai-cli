@@ -7,7 +7,3 @@
 /node_modules
 oclif.manifest.json
 .vscode/
-
-
-yarn.lock
-pnpm-lock.yaml
