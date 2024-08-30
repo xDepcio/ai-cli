@@ -231,5 +231,6 @@ type CompletionReturnData = {
 export {
     CopilotApi,
     ErrorTokenNotSet,
-    CompletionReturnData
+    CompletionReturnData,
+    ChatMessage
 }
