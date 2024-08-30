@@ -12,3 +12,7 @@ case $AI_CLI_MODE in
         echo "Invalid AI_CLI_MODE: $AI_CLI_MODE"
         ;;
 esac
+
+if [ "$AI_CLI_ENABLE_CHAT" = "true" ]; then
+    source $AI_CLI_SCRIPTS_DIR/other-features/chat/source.sh
+fi
