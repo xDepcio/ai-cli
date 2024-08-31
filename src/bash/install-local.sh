@@ -16,7 +16,17 @@ chmod +x $AI_CLI_SCRIPTS_DIR/*.sh
 cp ~/my-projects/ai-cli/dist/ai-cli-v0.0.1-*-linux-x64.tar.gz ~/
 cd ~/
 tar -xvf ai-cli-v0.0.1-*-linux-x64.tar.gz -C $AI_CLI_DIR
+rm ai-cli-v0.0.1-*-linux-x64.tar.gz
 
+# Download batcat
+cd $AI_CLI_DIR/ai-cli/bin
+wget https://github.com/sharkdp/bat/releases/download/v0.24.0/bat-v0.24.0-x86_64-unknown-linux-gnu.tar.gz
+tar -xvf bat-v0.24.0-x86_64-unknown-linux-gnu.tar.gz
+rm bat-v0.24.0-x86_64-unknown-linux-gnu.tar.gz
+mv bat-v0.24.0-x86_64-unknown-linux-gnu/bat bat
+rm -rf bat-v0.24.0-x86_64-unknown-linux-gnu
+
+# Add to bashrc
 if [ -z "$(grep "# ai-cli stuff" $HOME/.bashrc)" ]; then
     echo "" >> $HOME/.bashrc
     echo "# ai-cli stuff" >> $HOME/.bashrc
