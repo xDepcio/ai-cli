@@ -1,8 +1,25 @@
 import fs from 'fs';
+import { z } from 'zod';
+
+class LoggerError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'LoggerError';
+    }
+}
+class LoggerOptionsNotSetError extends LoggerError {
+    constructor() {
+        super('Logger options not set');
+        this.name = 'LoggerOptionsNotSetError';
+    }
+}
 
 type POJOStringifiableToJson = {
     [key: string]: string | number | boolean | null | POJOStringifiableToJson;
 }
+
+const logGranulaityEnvSchema = z.enum(['DEBUG', 'ERROR', 'INFO']).optional();
+type LogsGranularity = Exclude<z.infer<typeof logGranulaityEnvSchema>, undefined>;
 
 type LoggerOptions = ({
     logDest: 'console';
@@ -10,43 +27,68 @@ type LoggerOptions = ({
     logDest: 'file';
     logFile: string;
 }) & {
-    supressInternalLogs?: boolean;
+    logGranularity: LogsGranularity
 }
+/**
+ * Logger class with logs granularity hierarchy:
+ * INFO,
+ */
 class Logger {
+    public static clearInstance() {
+        Logger.instance = undefined as any;
+    }
+    public static setOptions(LoggerOptions: LoggerOptions) {
+        Logger.loggerOptions = LoggerOptions;
+    }
+    public static getInstance() {
+        if (!Logger.loggerOptions) {
+            throw new LoggerOptionsNotSetError();
+        }
+        if (!Logger.instance) {
+            Logger.instance = new Logger(Logger.loggerOptions);
+        }
+        return Logger.instance;
+    }
+    private static loggerOptions: LoggerOptions;
+    private static instance: Logger;
     private options: LoggerOptions;
 
-    public constructor(options: LoggerOptions) {
+    private constructor(options: LoggerOptions) {
         this.options = options;
-        if (this.options.supressInternalLogs === undefined) {
-            this.options.supressInternalLogs = false;
+    }
+
+    public info(message: string) {
+        this.message(message, 'INFO');
+    }
+
+    public debug(message: string) {
+        this.message(message, 'DEBUG');
+    }
+
+    public error(message: string) {
+        this.message(message, 'ERROR');
+    }
+
+    private doesGranularityAllowLogType(logType: LogsGranularity): boolean {
+
+        switch (this.options.logGranularity) {
+            case 'DEBUG':
+                return true;
+            case 'ERROR':
+                return logType === 'ERROR' || logType === 'INFO';
+            case 'INFO':
+                return logType === 'INFO';
         }
-        this.internal('Logger initialized');
     }
 
-    public info(message: string, data?: POJOStringifiableToJson) {
-        this.message(message, 'INFO', data);
-    }
-
-    public debug(message: string, data?: POJOStringifiableToJson) {
-        this.message(message, 'DEBUG', data);
-    }
-
-    public error(message: string, data?: POJOStringifiableToJson) {
-        this.message(message, 'ERROR', data);
-    }
-
-    private message(message: string, type: string, data?: POJOStringifiableToJson) {
-        const logMessage = `${(new Date()).toISOString()} [${type}] ${message}${data ? JSON.stringify(data, null, 4) : ''}\n`;
-        this.finishLog(logMessage);
-    }
-
-    private internal(message: string, data?: POJOStringifiableToJson) {
-        if (this.options.supressInternalLogs) {
+    private message(message: string, type: LogsGranularity) {
+        if (!this.doesGranularityAllowLogType(type)) {
             return;
         }
-        this.message(message, 'INTERNAL', data);
-    }
 
+        const logMessage = `${(new Date()).toISOString()} [${type}] ${message}\n`;
+        this.finishLog(logMessage);
+    }
 
     private finishLog(message: string) {
         switch (this.options.logDest) {
@@ -61,5 +103,6 @@ class Logger {
 }
 
 export {
-    Logger
+    Logger,
+    logGranulaityEnvSchema
 };

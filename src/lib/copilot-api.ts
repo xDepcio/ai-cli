@@ -1,6 +1,6 @@
 import { inspect } from "util"
-import { FILE_LOGGER } from "../index.js"
 import { IStore } from "./store.js"
+import { Logger } from "./logger.js"
 
 type CopilotApiConfig = {
     githubAccessToken: string | null,
@@ -130,7 +130,7 @@ class CopilotApi {
             })
         })
         const copilotText = await copilotResponse.text()
-        FILE_LOGGER.debug('Copilot response', { copilotText })
+        Logger.getInstance().debug(`Copilot response: ${JSON.stringify(copilotText, null, 4)}`)
         const allMatchedData = this.reduceIter(copilotText.matchAll(/\{.*\}/g))
             .map(match => JSON.parse(match))
         return allMatchedData
