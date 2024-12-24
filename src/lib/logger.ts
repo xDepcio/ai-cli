@@ -36,6 +36,7 @@ type LoggerOptions = ({
 class Logger {
     public static clearInstance() {
         Logger.instance = undefined as any;
+        Logger.loggerOptions = undefined as any;
     }
     public static setOptions(LoggerOptions: LoggerOptions) {
         Logger.loggerOptions = LoggerOptions;
@@ -69,7 +70,7 @@ class Logger {
         this.message(message, 'ERROR');
     }
 
-    private doesGranularityAllowLogType(logType: LogsGranularity): boolean {
+    public doesGranularityAllowLogType(logType: LogsGranularity): boolean {
 
         switch (this.options.logGranularity) {
             case 'DEBUG':
@@ -104,5 +105,7 @@ class Logger {
 
 export {
     Logger,
-    logGranulaityEnvSchema
+    logGranulaityEnvSchema,
+    LoggerError,
+    LoggerOptionsNotSetError
 };

@@ -10,6 +10,11 @@ import { readFileSync } from 'fs'
 describe('validateEnvVar function', () => {
     beforeEach(() => {
         Logger.clearInstance()
+        Logger.setOptions({
+            logDest: 'file',
+            logFile: tmp.fileSync().name,
+            logGranularity: 'DEBUG',
+        })
     })
 
     it("Should throw zod error on validation error", () => {
