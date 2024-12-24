@@ -1,3 +1,5 @@
+#!/bin/bash
+
 AI_CLI_DIR="$HOME/.ai-cli"
 AI_CLI_SCRIPTS_DIR="$AI_CLI_DIR/scripts"
 

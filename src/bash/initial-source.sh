@@ -1,3 +1,5 @@
+#!/bin/bash
+
 source $AI_CLI_SCRIPTS_DIR/config.sh
 alias ai-cli-signin="$AI_CLI_DIR/ai-cli/bin/ai-cli signin"
 

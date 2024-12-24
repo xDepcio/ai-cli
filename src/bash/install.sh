@@ -1,3 +1,5 @@
+#!/bin/bash
+
 AI_CLI_DIR="$HOME/.ai-cli"
 AI_CLI_SCRIPTS_DIR="$AI_CLI_DIR/scripts"
 AI_CLI_PASSIVE_NODE_HEAVY_BIND_COMPLETION_MODE_DIR="$AI_CLI_SCRIPTS_DIR/modes/passive-node-heavy-bind-completion"

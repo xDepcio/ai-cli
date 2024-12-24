@@ -1,3 +1,4 @@
+#!/bin/bash
 
 ai_cli_chat() {
     local input response
