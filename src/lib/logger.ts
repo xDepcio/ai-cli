@@ -14,10 +14,6 @@ class LoggerOptionsNotSetError extends LoggerError {
     }
 }
 
-type POJOStringifiableToJson = {
-    [key: string]: string | number | boolean | null | POJOStringifiableToJson;
-}
-
 const logGranulaityEnvSchema = z.enum(['DEBUG', 'ERROR', 'INFO']).optional();
 type LogsGranularity = Exclude<z.infer<typeof logGranulaityEnvSchema>, undefined>;
 

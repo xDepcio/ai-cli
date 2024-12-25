@@ -4,16 +4,16 @@ import fs from 'fs'
 import { curNLeft, curNRight } from '../lib/ansi-escapes.js'
 import { checkProcessExists } from '../lib/process-checker.js'
 import path from 'path'
-import { STORE_DIR_PATH } from '../constants.js'
 import { Logger } from '../lib/logger.js'
+import { STORE } from '../index.js'
 
 
 export default class PassiveCompletionDaemon extends Command {
-    private readonly completionFile = path.join(STORE_DIR_PATH, 'passive-completion.txt')
-    private readonly readlineLineFile = path.join(STORE_DIR_PATH, 'readline-line.txt')
-    private readonly readlinePointFile = path.join(STORE_DIR_PATH, 'readline-point.txt')
-    private readonly keepAliveFile = path.join(STORE_DIR_PATH, 'keep-alive.txt')
-    private readonly signalingProcessPidFile = path.join(STORE_DIR_PATH, 'passive-completion-trigger-pid.txt')
+    private readonly completionFile = path.join(STORE.getDirPath(), 'passive-completion.txt')
+    private readonly readlineLineFile = path.join(STORE.getDirPath(), 'readline-line.txt')
+    private readonly readlinePointFile = path.join(STORE.getDirPath(), 'readline-point.txt')
+    private readonly keepAliveFile = path.join(STORE.getDirPath(), 'keep-alive.txt')
+    private readonly signalingProcessPidFile = path.join(STORE.getDirPath(), 'passive-completion-trigger-pid.txt')
 
     private readCompletion() {
         const completion = fs.readFileSync(this.completionFile, 'utf8')
