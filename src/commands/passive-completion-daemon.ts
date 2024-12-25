@@ -5,6 +5,7 @@ import { curNLeft, curNRight } from '../lib/ansi-escapes.js'
 import { checkProcessExists } from '../lib/process-checker.js'
 import path from 'path'
 import { STORE_DIR_PATH } from '../constants.js'
+import { Logger } from '../lib/logger.js'
 
 
 export default class PassiveCompletionDaemon extends Command {
@@ -87,6 +88,7 @@ export default class PassiveCompletionDaemon extends Command {
         return new Promise((resolve, reject) => {
             process.on('SIGUSR2', () => {
                 const signallingProcessPid = this.readSignalingProcessPid()
+                Logger.getInstance().debug(`Signalling process pid: ${signallingProcessPid}`)
 
                 while (checkProcessExists(signallingProcessPid)) { }
                 this.handleCompletionSugestionWrite()
