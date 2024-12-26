@@ -3,14 +3,15 @@ import chalk from 'chalk'
 import fs from 'fs'
 import { KEYPRESS_TO_COMPLETION_FETCH_TIMEOUT, STORE_DIR_PATH } from '../constants.js'
 import { STORE } from '../index.js'
-import { CompletionReturnData } from '../lib/copilot-api.js'
+import { CompletionReturnData, CopilotApi } from '../lib/copilot-api.js'
 import { NewPromiseRegisteredError, makeSyncedPromise, sleepPromise } from '../lib/promise-lifo.js'
 import { StdoutWriter } from '../lib/stdout-writer.js'
-import { CompleteBackend } from './complete.js'
+// import { CompleteBackend } from './complete.js'
 
 export default class InotifyDaemon extends Command {
+    copilotApi: CopilotApi = new CopilotApi({ store: STORE })
     private syncedPromise = makeSyncedPromise()
-    private completeBackend = new CompleteBackend()
+    // private completeBackend = new CompleteBackend()
     private writer = new StdoutWriter({ loadingMessage: ' (...)' })
 
     private async handleReadlineAccess() {
@@ -27,7 +28,10 @@ export default class InotifyDaemon extends Command {
     }
 
     private handleCompletionRequest(language: string, prePrompt: string, readlineLine: string, parsedReadlineCursor: number) {
-        this.syncedPromise(this.completeBackend.getCompletions({ language, prompt: '\n$ ' + readlineLine, prePrompt }))
+        this.syncedPromise(
+            this.copilotApi.getCommandCompletion({ language, prompt: '\n$ ' + readlineLine, prePrompt })
+            // this.completeBackend.getCompletions({ language, prompt: '\n$ ' + readlineLine, prePrompt })
+        )
             .then((result) => {
                 if (!result) {
                     return

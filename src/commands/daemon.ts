@@ -3,7 +3,8 @@ import chalk from 'chalk'
 import fs from 'fs'
 import { STORE } from '../index.js'
 import { curNLeft, curNRight } from '../lib/ansi-escapes.js'
-import { CompleteBackend } from './complete.js'
+// import { CompleteBackend } from './complete.js'
+import { CopilotApi } from '../lib/copilot-api.js'
 
 type DaemonMessage = 'suggest' | 'exit' | ''
 type DaemonParsedMessage = {
@@ -20,6 +21,7 @@ type DaemonParsedMessage = {
 }
 
 export default class Daemon extends Command {
+    copilotApi: CopilotApi = new CopilotApi({ store: STORE })
     // static override args = {
     //   file: Args.string({description: 'file to read'}),
     // }
@@ -82,8 +84,9 @@ export default class Daemon extends Command {
                         process.stdout.write(chalk.dim('...') + curNLeft(3))
                         process.stdout.write(curNLeft((daemonMessage.readlineLine.length - 1) - daemonMessage.readlineCusror))
 
-                        const completeBackend = new CompleteBackend()
-                        const completions = await completeBackend.getCompletions({ language: daemonMessage.language, prompt: daemonMessage.prompt, prePrompt: daemonMessage.prePrompt })
+                        // const completeBackend = new CompleteBackend()
+                        // const completions = await completeBackend.getCompletions({ language: daemonMessage.language, prompt: daemonMessage.prompt, prePrompt: daemonMessage.prePrompt })
+                        const completions = await this.copilotApi.getCommandCompletion({ language: daemonMessage.language, prompt: daemonMessage.prompt, prePrompt: daemonMessage.prePrompt })
                         const completionsStr = completions.map(c => c.choices[0].text).join('')
                         STORE.writeTextFile('completions.txt', completionsStr)
 

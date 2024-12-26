@@ -4,12 +4,14 @@ import { exec, spawnSync } from 'child_process'
 import fs from 'fs'
 import { STORE } from '../index.js'
 import { curNLeft, curNRight, eraseFromCursorToEndLine } from '../lib/ansi-escapes.js'
-import { CompletionReturnData } from '../lib/copilot-api.js'
-import { CompleteBackend } from './complete.js'
+import { CompletionReturnData, CopilotApi } from '../lib/copilot-api.js'
+// import { CompleteBackend } from './complete.js'
 
 let cancel: (...args: any) => any = () => { }
-const completeBackend = new CompleteBackend()
+// const completeBackend = new CompleteBackend()
 export default class StraceDaemon extends Command {
+    copilotApi: CopilotApi = new CopilotApi({ store: STORE })
+
     static override flags = {
         pid: Flags.string({ char: 'p', description: 'bash pid to trace', required: true }),
     }
@@ -29,7 +31,10 @@ export default class StraceDaemon extends Command {
         process.stdout.write(curNRight((readlineLine.length - 1) - parsedReadlineCursor) + eraseFromCursorToEndLine)
         process.stdout.write(chalk.dim('...') + curNLeft(3))
         process.stdout.write(curNLeft((readlineLine.length - 1) - parsedReadlineCursor))
-        Promise.race([p, completeBackend.getCompletions({ language, prompt, prePrompt })]).then((result) => {
+        Promise.race([p,
+            // completeBackend.getCompletions({ language, prompt, prePrompt })
+            this.copilotApi.getCommandCompletion({ language, prompt, prePrompt })
+        ]).then((result) => {
             if (result) {
                 const completions = result as CompletionReturnData[]
                 const completionsStr = completions.map(c => c.choices[0].text).join('')

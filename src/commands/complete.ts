@@ -1,7 +1,7 @@
 import { Command, Flags } from '@oclif/core'
 import fs from 'fs'
 import { STORE } from '../index.js'
-import { CompletionReturnData, CopilotApi } from '../lib/copilot-api.js'
+import { CompletionReturnData, CopilotApi, ErrorTokenNotSet } from '../lib/copilot-api.js'
 
 export default class Complete extends Command {
     // static override args = {
@@ -48,24 +48,25 @@ export default class Complete extends Command {
 
     public async run(): Promise<void> {
         const { args, flags } = await this.parse(Complete)
-        const completeBackend = new CompleteBackend()
+        // const completeBackend = new CompleteBackend()
 
-        let completions: CompletionReturnData[] = []
+        let prompt: string = ''
         switch (true) {
             case flags.stdin:
                 const stdinStr = await this.getPromptFromStdin()
-                completions = await completeBackend.getCompletions({ prompt: stdinStr, language: flags.language, prePrompt: flags.prePrompt })
+                prompt = stdinStr
                 break
             case !!flags.text:
-                completions = await completeBackend.getCompletions({ prompt: flags.text, language: flags.language, prePrompt: flags.prePrompt })
+                prompt = flags.text
                 break
             case !!flags.file:
                 const fileContent = fs.readFileSync(flags.file, 'utf8')
-                completions = await completeBackend.getCompletions({ prompt: fileContent, language: flags.language, prePrompt: flags.prePrompt })
+                prompt = fileContent
                 break
             default:
                 break
         }
+        const completions = await this.copilotApi.getCommandCompletion({ prompt, language: flags.language, prePrompt: flags.prePrompt })
         process.stdout.write(completions.map(c => c.choices[0].text).join(''))
     }
 
@@ -86,17 +87,17 @@ export default class Complete extends Command {
     }
 }
 
-export interface ICompleteBackend {
-    getCompletions({ language, prompt, prePrompt }: { prompt: string, language: string, prePrompt?: string }): Promise<CompletionReturnData[]>
-}
-export class CompleteBackend implements ICompleteBackend {
-    private copilotApi: CopilotApi
-    constructor() {
-        this.copilotApi = new CopilotApi({ store: STORE })
-    }
+// export interface ICompleteBackend {
+//     getCompletions({ language, prompt, prePrompt }: { prompt: string, language: string, prePrompt?: string }): Promise<CompletionReturnData[]>
+// }
+// export class CompleteBackend implements ICompleteBackend {
+//     private copilotApi: CopilotApi
+//     constructor() {
+//         this.copilotApi = new CopilotApi({ store: STORE })
+//     }
 
-    public async getCompletions({ language, prompt, prePrompt = '' }: { prompt: string, language: string, prePrompt?: string }): Promise<CompletionReturnData[]> {
-        const completions = await this.copilotApi.getCommandCompletion({ prompt, language, prePrompt })
-        return completions
-    }
-}
+//     public async getCompletions({ language, prompt, prePrompt = '' }: { prompt: string, language: string, prePrompt?: string }): Promise<CompletionReturnData[]> {
+//         const completions = await this.copilotApi.getCommandCompletion({ prompt, language, prePrompt })
+//         return completions
+//     }
+// }

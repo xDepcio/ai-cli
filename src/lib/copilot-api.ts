@@ -9,7 +9,7 @@ type CopilotApiConfig = {
 
 class ErrorTokenNotSet extends Error {
     constructor() {
-        super('Github access token not set. Please run `signin` to authenticate.')
+        super('Github access token not set. Please run `ai-cli-signin` to authenticate.')
     }
 
 }
@@ -25,6 +25,7 @@ class CopilotApi {
 
     constructor({ store }: { store: IStore }) {
         this.store = store
+        store.createJsonFileIfNotExist(this.configFile)
     }
 
     public async setupDevice() {
@@ -103,6 +104,9 @@ class CopilotApi {
     public async getCommandCompletion({ language = 'bash', prompt, prePrompt = '' }: { prompt: string, language?: string, prePrompt?: string }): Promise<CompletionReturnData[]> {
         await this.generateNewToken()
         const token = this.store.readJsonFile<CopilotApiConfig>(this.configFile).githubToken
+        if (!token) {
+            throw new ErrorTokenNotSet()
+        }
 
         if (prePrompt) {
             prompt = prePrompt + prompt
