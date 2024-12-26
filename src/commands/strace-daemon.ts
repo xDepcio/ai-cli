@@ -5,10 +5,8 @@ import fs from 'fs'
 import { STORE } from '../index.js'
 import { curNLeft, curNRight, eraseFromCursorToEndLine } from '../lib/ansi-escapes.js'
 import { CompletionReturnData, CopilotApi } from '../lib/copilot-api.js'
-// import { CompleteBackend } from './complete.js'
 
 let cancel: (...args: any) => any = () => { }
-// const completeBackend = new CompleteBackend()
 export default class StraceDaemon extends Command {
     copilotApi: CopilotApi = new CopilotApi({ store: STORE })
 
@@ -32,7 +30,6 @@ export default class StraceDaemon extends Command {
         process.stdout.write(chalk.dim('...') + curNLeft(3))
         process.stdout.write(curNLeft((readlineLine.length - 1) - parsedReadlineCursor))
         Promise.race([p,
-            // completeBackend.getCompletions({ language, prompt, prePrompt })
             this.copilotApi.getCommandCompletion({ language, prompt, prePrompt })
         ]).then((result) => {
             if (result) {

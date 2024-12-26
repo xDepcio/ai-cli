@@ -48,7 +48,6 @@ export default class Complete extends Command {
 
     public async run(): Promise<void> {
         const { args, flags } = await this.parse(Complete)
-        // const completeBackend = new CompleteBackend()
 
         let prompt: string = ''
         switch (true) {
@@ -86,18 +85,3 @@ export default class Complete extends Command {
         })
     }
 }
-
-// export interface ICompleteBackend {
-//     getCompletions({ language, prompt, prePrompt }: { prompt: string, language: string, prePrompt?: string }): Promise<CompletionReturnData[]>
-// }
-// export class CompleteBackend implements ICompleteBackend {
-//     private copilotApi: CopilotApi
-//     constructor() {
-//         this.copilotApi = new CopilotApi({ store: STORE })
-//     }
-
-//     public async getCompletions({ language, prompt, prePrompt = '' }: { prompt: string, language: string, prePrompt?: string }): Promise<CompletionReturnData[]> {
-//         const completions = await this.copilotApi.getCommandCompletion({ prompt, language, prePrompt })
-//         return completions
-//     }
-// }

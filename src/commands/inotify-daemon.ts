@@ -6,12 +6,10 @@ import { STORE } from '../index.js'
 import { CompletionReturnData, CopilotApi } from '../lib/copilot-api.js'
 import { NewPromiseRegisteredError, makeSyncedPromise, sleepPromise } from '../lib/promise-lifo.js'
 import { StdoutWriter } from '../lib/stdout-writer.js'
-// import { CompleteBackend } from './complete.js'
 
 export default class InotifyDaemon extends Command {
     copilotApi: CopilotApi = new CopilotApi({ store: STORE })
     private syncedPromise = makeSyncedPromise()
-    // private completeBackend = new CompleteBackend()
     private writer = new StdoutWriter({ loadingMessage: ' (...)' })
 
     private async handleReadlineAccess() {
@@ -30,7 +28,6 @@ export default class InotifyDaemon extends Command {
     private handleCompletionRequest(language: string, prePrompt: string, readlineLine: string, parsedReadlineCursor: number) {
         this.syncedPromise(
             this.copilotApi.getCommandCompletion({ language, prompt: '\n$ ' + readlineLine, prePrompt })
-            // this.completeBackend.getCompletions({ language, prompt: '\n$ ' + readlineLine, prePrompt })
         )
             .then((result) => {
                 if (!result) {
