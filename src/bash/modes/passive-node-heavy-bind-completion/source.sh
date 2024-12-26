@@ -79,11 +79,12 @@ $ $READLINE_LINE"
 
     completion=$($AI_CLI_DIR/ai-cli/bin/ai-cli complete -l bash -t "$prompt")
     # completion="xddd"
-    completion_daemon_pid=$(cat $AI_CLI_PASSIVE_COMPLETION_DAEMON_PID_FILE)
+    # completion_daemon_pid=$(cat $AI_CLI_PASSIVE_COMPLETION_DAEMON_PID_FILE)
 
     echo -n "$READLINE_LINE" >| $AI_CLI_DIR/readline-line.txt
     echo -n "$READLINE_POINT" >| $AI_CLI_DIR/readline-point.txt
     echo -n "$completion" >| $AI_CLI_DIR/passive-completion.txt
+    echo -n "$$" >| "$AI_CLI_DIR/terminal-pid.txt"
 
     _send_signal_to_passive_completion_daemon
 }

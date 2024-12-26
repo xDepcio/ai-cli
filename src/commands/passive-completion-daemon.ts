@@ -14,6 +14,7 @@ export default class PassiveCompletionDaemon extends Command {
     private readonly readlinePointFile = path.join(STORE.getDirPath(), 'readline-point.txt')
     private readonly keepAliveFile = path.join(STORE.getDirPath(), 'keep-alive.txt')
     private readonly signalingProcessPidFile = path.join(STORE.getDirPath(), 'passive-completion-trigger-pid.txt')
+    private readonly terminalPidFile = path.join(STORE.getDirPath(), 'terminal-pid.txt')
 
     private readCompletion() {
         const completion = fs.readFileSync(this.completionFile, 'utf8')
@@ -42,6 +43,9 @@ export default class PassiveCompletionDaemon extends Command {
         if (!fs.existsSync(this.signalingProcessPidFile)) {
             fs.writeFileSync(this.signalingProcessPidFile, '', 'utf8')
         }
+        if (!fs.existsSync(this.terminalPidFile)) {
+            fs.writeFileSync(this.terminalPidFile, '', 'utf8')
+        }
     }
 
     private handleCompletionSugestionWrite() {
@@ -50,15 +54,16 @@ export default class PassiveCompletionDaemon extends Command {
             return
         }
         const { readlineLine, readlinePoint } = this.readReadlineData()
+        const terminalPid = fs.readFileSync(this.terminalPidFile, 'utf8')
 
         const cursorDistFromEnd = readlineLine.length - parseInt(readlinePoint)
         if (cursorDistFromEnd > 0) {
-            process.stdout.write(curNRight(cursorDistFromEnd))
+            fs.writeFileSync(`/proc/${terminalPid}/fd/1`, curNRight(cursorDistFromEnd), 'utf8')
         }
-        process.stdout.write(chalk.dim(completion))
-        process.stdout.write(curNLeft(completion.length))
+        fs.writeFileSync(`/proc/${terminalPid}/fd/1`, chalk.dim(completion), 'utf8')
+        fs.writeFileSync(`/proc/${terminalPid}/fd/1`, curNLeft(completion.length), 'utf8')
         if (cursorDistFromEnd > 0) {
-            process.stdout.write(curNLeft(cursorDistFromEnd))
+            fs.writeFileSync(`/proc/${terminalPid}/fd/1`, curNLeft(cursorDistFromEnd), 'utf8')
         }
     }
 
